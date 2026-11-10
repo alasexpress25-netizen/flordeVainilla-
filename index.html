@@ -1,8 +1,4 @@
-import os
-
-os.makedirs('generated', exist_ok=True)
-
-html_content = r"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -786,10 +782,3 @@ html_content = r"""<!DOCTYPE html>
   </script>
 </body>
 </html>
-"""
-
-with open("generated/index.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-assert 'lines.join("\\n")' in html_content
-print("Successfully generated index.html:", os.path.getsize("generated/index.html"), "bytes")
