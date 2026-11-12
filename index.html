@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flor de Baunilha — Confeitaria Artesanal | Imbituba - SC</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #FAF6F0;
@@ -30,21 +31,28 @@
       border-bottom: 2px dashed var(--gold);
       background: linear-gradient(180deg, #F4ECE1 0%, #FAF6F0 100%);
     }
-    .lang-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; }
+    .lang-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
     .lang-btn {
       background: var(--card); border: 1.5px solid var(--brown); color: var(--brown);
       padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
     }
     .lang-btn.active { background: var(--brown); color: var(--bg); }
-    .brand-circle {
-      width: 110px; height: 110px; margin: 0 auto 10px; border: 2.5px solid var(--brown);
-      border-radius: 50%; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; background: var(--bg); padding: 8px;
+    .logo-wrapper {
+      width: 145px; height: 145px; margin: 0 auto 12px; border: 3px solid var(--brown);
+      border-radius: 50%; overflow: hidden; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(74, 46, 27, 0.14);
     }
-    .brand-circle span.flower { font-size: 1.5rem; line-height: 1; }
-    .brand-circle strong { font-family: Georgia, serif; font-size: 0.92rem; line-height: 1.1; }
-    .brand-circle small { font-size: 0.65rem; font-style: italic; }
-    h1 { font-family: Georgia, serif; font-size: 1.85rem; }
+    .logo-wrapper img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .logo-fallback {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px;
+    }
+    .logo-fallback span { font-size: 1.8rem; line-height: 1; }
+    .logo-fallback strong { font-family: Georgia, serif; font-size: 0.95rem; line-height: 1.1; }
+    .logo-fallback small { font-size: 0.65rem; font-style: italic; }
+    h1 { font-family: Georgia, serif; font-size: 1.9rem; }
     .subtitle { font-size: 0.92rem; color: var(--brown-light); font-weight: 500; }
     .container { max-width: 680px; margin: 0 auto; padding: 16px 14px; }
     .intro-box {
@@ -118,12 +126,15 @@
       margin-bottom: 10px; background: var(--bg);
     }
     .btn-sm {
-      padding: 6px 10px; border-radius: 6px; border: none;
-      font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 6px;
+      padding: 7px 12px; border-radius: 6px; border: none;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-top: 6px;
     }
     .btn-dark { background: var(--brown); color: #FFF; }
-    .btn-gold { background: var(--gold); color: #FFF; }
     .btn-red { background: var(--danger); color: #FFF; }
+    .logo-preview-admin {
+      width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--brown);
+      object-fit: cover; display: block; margin: 8px 0; background: #fff;
+    }
   </style>
 </head>
 <body>
@@ -133,10 +144,12 @@
     <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">🇧🇷 Português</button>
     <button class="lang-btn" id="btn-es" onclick="setLang('es')">🇦🇷 Español</button>
   </div>
-  <div class="brand-circle">
-    <span class="flower">🌸</span>
-    <strong>Flor de Baunilha</strong>
-    <small>Feito com amor</small>
+  <div class="logo-wrapper" id="header-logo-box">
+    <div class="logo-fallback">
+      <span>🌸</span>
+      <strong>Flor de Baunilha</strong>
+      <small>Feito com amor</small>
+    </div>
   </div>
   <h1>Flor de Baunilha</h1>
   <p class="subtitle" data-pt="Confeitaria Artesanal • Imbituba - SC" data-es="Pastelería Artesanal • Imbituba - SC">Confeitaria Artesanal • Imbituba - SC</p>
@@ -144,13 +157,13 @@
 
 <div class="container">
   <div class="intro-box">
-    <p data-pt="Selecione a quantidade desejada de cada produto: os descontos por 3, 6 e 12 unidades são calculados automaticamente!"
-       data-es="Seleccioná la cantidad deseada de cada producto: ¡los descuentos por 3, 6 y 12 unidades se calculan automáticamente!">
-      Selecione a quantidade desejada de cada produto: os descontos por 3, 6 e 12 unidades são calculados automaticamente!
+    <p data-pt="Delícias artesanais feitas no dia: rosquinhas super macias e sequinhas, pães salgados assados em fôrma individual e bolos caseiros sob encomenda. Os descontos por 3, 6 e 12 unidades são calculados automaticamente!"
+       data-es="Delicias artesanales hechas en el día: donas súper tiernas y sequitas, panes salados horneados en molde individual y tortas caseras por encargo. ¡Los descuentos por 3, 6 y 12 unidades se calculan automáticamente!">
+      Delícias artesanais feitas no dia: rosquinhas super macias e sequinhas, pães salgados assados em fôrma individual e bolos caseiros sob encomenda. Os descontos por 3, 6 e 12 unidades são calculados automaticamente!
     </p>
   </div>
 
-  <div id="catalog-container"></div>
+  <div id="catalog-container">Carregando cardápio...</div>
 
   <div class="checkout-box" id="checkout-section">
     <h2 data-pt="📋 Seus Dados para o Pedido" data-es="📋 Tus Datos para el Pedido">📋 Seus Dados para o Pedido</h2>
@@ -203,11 +216,22 @@
     </div>
 
     <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
+      <h4 style="margin-bottom:6px;">🖼️ Logotipo da Página (Sincronizado na Nuvem)</h4>
+      <p style="font-size:0.8rem; color:var(--brown-light);">Selecione a imagem quadrada ou circular do seu logo no PC ou celular:</p>
+      <img id="admin-logo-preview" class="logo-preview-admin" style="display:none;" alt="Preview Logo" />
+      <input type="file" id="logo-file-input" accept="image/*" style="margin-top:8px; font-size:0.85rem;" onchange="previewLogoFile(event)" />
+      <div>
+        <button class="btn-sm btn-dark" onclick="saveLogoToCloud()">💾 Salvar Logo na Página</button>
+        <button class="btn-sm btn-red" onclick="removeLogoFromCloud()">Remover Logo</button>
+      </div>
+    </div>
+
+    <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
       <h4 style="margin-bottom:8px;">➕ Novo Produto com Descontos por Quantidade</h4>
       <div class="form-group">
         <label>Categoria</label>
         <select id="new-cat">
-          <option value="donas">🍩 Rosquinhas Noruegas / Donas</option>
+          <option value="donas">🍩 Rosquinhas / Donas</option>
           <option value="panes">🥖 Pães Artesanais Salgados</option>
           <option value="tortas">🎂 Bolos e Tortas por Encomenda</option>
         </select>
@@ -228,30 +252,28 @@
     <div id="admin-product-list"></div>
 
     <div style="background:#FAF6F0; padding:10px; border-radius:10px; border:1px solid var(--border); margin-top:12px;">
-      <h4>🔑 Alterar Senha Admin</h4>
+      <h4>🔑 Alterar Senha Admin (Sincronizada)</h4>
       <input type="password" id="new-pin" placeholder="Nova senha (mín. 4 dígitos)" style="padding:6px; margin-top:6px; border-radius:6px; border:1px solid #ccc;" />
       <button class="btn-sm btn-dark" onclick="changePin()">Atualizar Senha</button>
-    </div>
-
-    <div style="background:#E8F8F5; padding:12px; border-radius:10px; border:1px solid #1ABC9C; margin-top:12px;">
-      <h4>💾 Salvar Alterações no GitHub Pages</h4>
-      <p style="font-size:0.8rem; margin-bottom:8px;">Depois de alterar preços ou produtos, baixe o arquivo atualizado ou copie o código para substituir no GitHub:</p>
-      <button class="btn-sm btn-dark" onclick="downloadUpdatedHTML()">⬇️ Baixar index.html</button>
-      <button class="btn-sm btn-gold" onclick="copyUpdatedHTML()">📋 Copiar Código</button>
     </div>
   </div>
 </div>
 
 <script>
+  // --- CONFIGURACIÓN SUPABASE (Dejá las comillas "" y pegá tus datos adentro) ---
   const SUPABASE_URL = "https://ebtlnhudnmyqspgbvyyw.supabase.co";
   const SUPABASE_KEY = "sb_publishable_awf4a-DVknXEJuQmvi53gg_u4Dcc0W6";
+  const db = (SUPABASE_URL.startsWith("http")) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
   const WHATSAPP_NUMBER = "5548991180841";
   let currentLang = "pt";
-  let adminPin = localStorage.getItem("fb_admin_pin") || "1234";
+  let adminPin = "1234";
+  let currentLogoBase64 = "";
+  let pendingLogoBase64 = "";
 
-  const DEFAULT_PRODUCTS = [
-    { id: 1, cat: "donas", name_pt: "Rosquinha Noruega Clássica", name_es: "Dona Noruega Clásica", description: "Macia por dentro, sequinha e passada no açúcar • Tierna y azucarada", price_1: 3.00, price_3: 8.00, price_6: 15.00, price_12: 28.00 },
-    { id: 2, cat: "donas", name_pt: "Rosquinha Noruega com Chocolate", name_es: "Dona Noruega con Chocolate", description: "Cobertura de chocolate selecionado • Baño de chocolate", price_1: 4.00, price_3: 11.00, price_6: 21.00, price_12: 40.00 },
+  const FALLBACK_PRODUCTS = [
+    { id: 1, cat: "donas", name_pt: "Rosquinha Artesanal Clássica", name_es: "Dona Artesanal Clásica", description: "Macia por dentro, sequinha e passada no açúcar • Tierna y azucarada", price_1: 3.00, price_3: 8.00, price_6: 15.00, price_12: 28.00 },
+    { id: 2, cat: "donas", name_pt: "Rosquinha com Chocolate", name_es: "Dona con Chocolate", description: "Cobertura de chocolate selecionado • Baño de chocolate", price_1: 4.00, price_3: 11.00, price_6: 21.00, price_12: 40.00 },
     { id: 3, cat: "panes", name_pt: "Pão Artesanal com Torresmo", name_es: "Pan Artesanal con Chicharrón", description: "Assado em fôrma individual • Horneado en molde individual", price_1: 15.00, price_3: null, price_6: null, price_12: null },
     { id: 4, cat: "panes", name_pt: "Pão Artesanal de Calabresa", name_es: "Pan Artesanal de Calabresa", description: "Recheado e perfumado com orégano • Relleno con orégano", price_1: 15.00, price_3: null, price_6: null, price_12: null },
     { id: 5, cat: "panes", name_pt: "Pão Caseiro Tradicional", name_es: "Pan Casero Tradicional", description: "Massa macia artesanal • Masa tierna artesanal", price_1: 15.00, price_3: null, price_6: null, price_12: null },
@@ -261,71 +283,124 @@
   let products = [];
   let cart = {};
 
-  function sbHeaders() {
-    return {
-      "apikey": SUPABASE_KEY,
-      "Authorization": "Bearer " + SUPABASE_KEY,
-      "Content-Type": "application/json",
-      "Prefer": "return=representation"
-    };
-  }
-
-  function hasSupabase() {
-    return SUPABASE_URL.startsWith("http") && SUPABASE_KEY.length > 20;
-  }
-
   function formatBRL(val) {
     return "R$ " + Number(val).toFixed(2).replace(".", ",");
   }
 
-  function calcItemTotal(item, qty) {
-    if (qty <= 0) return { total: 0, saved: 0 };
-    let rem = qty;
-    let total = 0;
-
-    if (item.price_12 && rem >= 12) {
-      const packs12 = Math.floor(rem / 12);
-      total += packs12 * Number(item.price_12);
-      rem %= 12;
+  function applyLogoToHeader(dataUrl) {
+    const box = document.getElementById("header-logo-box");
+    const adminPrev = document.getElementById("admin-logo-preview");
+    if (dataUrl && dataUrl.startsWith("data:image")) {
+      box.innerHTML = `<img src="${dataUrl}" alt="Flor de Baunilha" />`;
+      adminPrev.src = dataUrl;
+      adminPrev.style.display = "block";
+    } else {
+      box.innerHTML = `<div class="logo-fallback"><span>🌸</span><strong>Flor de Baunilha</strong><small>Feito com amor</small></div>`;
+      adminPrev.style.display = "none";
     }
-    if (item.price_6 && rem >= 6) {
-      const packs6 = Math.floor(rem / 6);
-      total += packs6 * Number(item.price_6);
-      rem %= 6;
-    }
-    if (item.price_3 && rem >= 3) {
-      const packs3 = Math.floor(rem / 3);
-      total += packs3 * Number(item.price_3);
-      rem %= 3;
-    }
-    total += rem * Number(item.price_1);
-    const fullPrice = qty * Number(item.price_1);
-    return { total, saved: Math.max(0, fullPrice - total) };
   }
 
-  async function loadProducts() {
-    if (hasSupabase()) {
-      try {
-        const res = await fetch(SUPABASE_URL + "/rest/v1/productos?activo=eq.true&order=id.asc", { headers: sbHeaders() });
-        const data = await res.json();
-        products = (Array.isArray(data) && data.length > 0) ? data : DEFAULT_PRODUCTS;
-      } catch (e) {
-        products = DEFAULT_PRODUCTS;
+  function calcItemTotal(item, qty) {
+    if (qty <= 0) return { total: 0, saved: 0 };
+    let rem = qty, total = 0;
+    if (item.price_12 && rem >= 12) { total += Math.floor(rem / 12) * Number(item.price_12); rem %= 12; }
+    if (item.price_6 && rem >= 6) { total += Math.floor(rem / 6) * Number(item.price_6); rem %= 6; }
+    if (item.price_3 && rem >= 3) { total += Math.floor(rem / 3) * Number(item.price_3); rem %= 3; }
+    total += rem * Number(item.price_1);
+    return { total, saved: Math.max(0, qty * Number(item.price_1) - total) };
+  }
+
+  async function initApp() {
+    if (db) {
+      const { data: prodData, error: prodErr } = await db.from("productos").select("*").eq("activo", true).order("id", { ascending: true });
+      products = (!prodErr && prodData && prodData.length > 0) ? prodData : FALLBACK_PRODUCTS;
+
+      const { data: cfgRows } = await db.from("config").select("*");
+      if (cfgRows) {
+        cfgRows.forEach(row => {
+          if (row.clave === "admin_pin") adminPin = row.valor;
+          if (row.clave === "logo_url") currentLogoBase64 = row.valor;
+        });
       }
     } else {
-      products = JSON.parse(localStorage.getItem("fb_products_v2")) || DEFAULT_PRODUCTS;
+      products = JSON.parse(localStorage.getItem("fb_products_v2")) || FALLBACK_PRODUCTS;
+      adminPin = localStorage.getItem("fb_admin_pin") || "1234";
+      currentLogoBase64 = localStorage.getItem("fb_logo_url") || "";
     }
+    applyLogoToHeader(currentLogoBase64);
     renderCatalog();
     updateCartBar();
+  }
+
+  function previewLogoFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement("canvas");
+        const size = 360;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+        // Si es imagen doble horizontal (etiqueta), recorta el círculo izquierdo
+        if (img.width > img.height * 1.25) {
+          const side = img.height;
+          ctx.drawImage(img, 0, 0, side, side, 0, 0, size, size);
+        } else {
+          const minSide = Math.min(img.width, img.height);
+          const sx = (img.width - minSide) / 2;
+          const sy = (img.height - minSide) / 2;
+          ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+        }
+        pendingLogoBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        const adminPrev = document.getElementById("admin-logo-preview");
+        adminPrev.src = pendingLogoBase64;
+        adminPrev.style.display = "block";
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function saveLogoToCloud() {
+    if (!pendingLogoBase64) {
+      alert("Selecione primeiro uma imagem do seu PC ou celular.");
+      return;
+    }
+    if (db) {
+      const { error } = await db.from("config").upsert({ clave: "logo_url", valor: pendingLogoBase64 }, { onConflict: "clave" });
+      if (error) {
+        alert("Erro ao salvar logo no Supabase: " + error.message);
+        return;
+      }
+    } else {
+      localStorage.setItem("fb_logo_url", pendingLogoBase64);
+    }
+    currentLogoBase64 = pendingLogoBase64;
+    applyLogoToHeader(currentLogoBase64);
+    alert("Logotipo atualizado na nuvem com sucesso!");
+  }
+
+  async function removeLogoFromCloud() {
+    if (db) {
+      const { error } = await db.from("config").delete().eq("clave", "logo_url");
+      if (error) { alert("Erro ao remover logo: " + error.message); return; }
+    } else {
+      localStorage.removeItem("fb_logo_url");
+    }
+    currentLogoBase64 = "";
+    pendingLogoBase64 = "";
+    applyLogoToHeader("");
+    alert("Logotipo removido.");
   }
 
   function setLang(lang) {
     currentLang = lang;
     document.getElementById("btn-pt").classList.toggle("active", lang === "pt");
     document.getElementById("btn-es").classList.toggle("active", lang === "es");
-    document.querySelectorAll("[data-pt]").forEach(el => {
-      el.textContent = el.getAttribute("data-" + lang);
-    });
+    document.querySelectorAll("[data-pt]").forEach(el => el.textContent = el.getAttribute("data-" + lang));
     renderCatalog();
     updateCartBar();
   }
@@ -333,7 +408,7 @@
   function renderCatalog() {
     const container = document.getElementById("catalog-container");
     const categories = [
-      { key: "donas", title_pt: "🍩 Rosquinhas Noruegas / Donas", title_es: "🍩 Donas Noruegas Artesanales" },
+      { key: "donas", title_pt: "🍩 Rosquinhas / Donas Artesanais", title_es: "🍩 Donas Artesanales" },
       { key: "panes", title_pt: "🥖 Pães Artesanais Salgados", title_es: "🥖 Panes Artesanales Salados" },
       { key: "tortas", title_pt: "🎂 Bolos e Tortas por Encomenda", title_es: "🎂 Tortas por Encargo" }
     ];
@@ -352,29 +427,30 @@
         const qty = cart[item.id] || 0;
         const calc = calcItemTotal(item, qty);
         let pills = "";
-        if (item.price_3) pills += '<span class="promo-pill">3x ' + formatBRL(item.price_3) + '</span>';
-        if (item.price_6) pills += '<span class="promo-pill">6x ' + formatBRL(item.price_6) + '</span>';
-        if (item.price_12) pills += '<span class="promo-pill">12x ' + formatBRL(item.price_12) + '</span>';
+        if (item.price_3) pills += `<span class="promo-pill">3x ${formatBRL(item.price_3)}</span>`;
+        if (item.price_6) pills += `<span class="promo-pill">6x ${formatBRL(item.price_6)}</span>`;
+        if (item.price_12) pills += `<span class="promo-pill">12x ${formatBRL(item.price_12)}</span>`;
 
         const subHtml = qty > 0
-          ? '<div class="subtotal-line">Subtotal: ' + formatBRL(calc.total) + (calc.saved > 0 ? ' (' + (currentLang === "pt" ? 'Desconto: -' : 'Ahorro: -') + formatBRL(calc.saved) + ')' : '') + '</div>'
+          ? `<div class="subtotal-line">Subtotal: ${formatBRL(calc.total)}${calc.saved > 0 ? ` (${currentLang === "pt" ? "Desconto aplicado: -" : "Ahorro: -"}${formatBRL(calc.saved)})` : ""}</div>`
           : "";
 
         const card = document.createElement("div");
         card.className = "product-card";
-        card.innerHTML =
-          '<div class="product-info">' +
-            '<h3>' + (currentLang === "pt" ? item.name_pt : item.name_es) + '</h3>' +
-            '<p>' + (item.description || "") + '</p>' +
-            '<span class="price-tag">' + formatBRL(item.price_1) + ' <small style="font-weight:400;">/ un.</small></span>' +
-            (pills ? '<div class="promo-pills">' + pills + '</div>' : '') +
-            subHtml +
-          '</div>' +
-          '<div class="qty-control">' +
-            '<button class="qty-btn" onclick="changeQty(' + item.id + ', -1)">−</button>' +
-            '<span class="qty-val">' + qty + '</span>' +
-            '<button class="qty-btn" onclick="changeQty(' + item.id + ', 1)">+</button>' +
-          '</div>';
+        card.innerHTML = `
+          <div class="product-info">
+            <h3>${currentLang === "pt" ? item.name_pt : item.name_es}</h3>
+            <p>${item.description || ""}</p>
+            <span class="price-tag">${formatBRL(item.price_1)} <small style="font-weight:400;">/ un.</small></span>
+            ${pills ? `<div class="promo-pills">${pills}</div>` : ""}
+            ${subHtml}
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+            <span class="qty-val">${qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+          </div>
+        `;
         container.appendChild(card);
       });
     });
@@ -432,14 +508,16 @@
       const calc = calcItemTotal(p, q);
       total += calc.total;
       const itemName = currentLang === "pt" ? p.name_pt : p.name_es;
-      const promoNote = calc.saved > 0 ? " _(desconto -" + formatBRL(calc.saved) + ")_" : "";
-      lines.push("• " + q + "x " + itemName + " — " + formatBRL(calc.total) + promoNote);
+      const promoNote = calc.saved > 0 ? ` _(desconto -${formatBRL(calc.saved)})_` : "";
+      lines.push(`• ${q}x ${itemName} — ${formatBRL(calc.total)}${promoNote}`);
     });
 
     lines.push("", "💰 *TOTAL A PAGAR: " + formatBRL(total) + "*");
-    window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("\n")), "_blank");
+    window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("
+")), "_blank");
   }
 
+  // --- ADMIN ---
   function openAdmin() {
     const entered = prompt("Senha Admin:");
     if (entered === adminPin) {
@@ -457,16 +535,17 @@
     products.forEach((p, idx) => {
       const div = document.createElement("div");
       div.className = "admin-item";
-      div.innerHTML =
-        '<strong>' + p.name_pt + '</strong>' +
-        '<div class="grid-4" style="margin-top:6px;">' +
-          '<div><small>1 un.</small><input type="number" step="0.50" id="ep1-' + idx + '" value="' + p.price_1 + '" style="width:100%; padding:4px;" /></div>' +
-          '<div><small>3 un.</small><input type="number" step="0.50" id="ep3-' + idx + '" value="' + (p.price_3 || "") + '" style="width:100%; padding:4px;" /></div>' +
-          '<div><small>6 un.</small><input type="number" step="0.50" id="ep6-' + idx + '" value="' + (p.price_6 || "") + '" style="width:100%; padding:4px;" /></div>' +
-          '<div><small>12 un.</small><input type="number" step="0.50" id="ep12-' + idx + '" value="' + (p.price_12 || "") + '" style="width:100%; padding:4px;" /></div>' +
-        '</div>' +
-        '<button class="btn-sm btn-dark" onclick="updateProduct(' + idx + ')">Salvar Alterações</button> ' +
-        '<button class="btn-sm btn-red" onclick="deleteProduct(' + idx + ')">Remover</button>';
+      div.innerHTML = `
+        <strong>${p.name_pt}</strong>
+        <div class="grid-4" style="margin-top:6px;">
+          <div><small>1 un.</small><input type="number" step="0.50" id="ep1-${idx}" value="${p.price_1}" style="width:100%; padding:4px;" /></div>
+          <div><small>3 un.</small><input type="number" step="0.50" id="ep3-${idx}" value="${p.price_3 || ""}" style="width:100%; padding:4px;" /></div>
+          <div><small>6 un.</small><input type="number" step="0.50" id="ep6-${idx}" value="${p.price_6 || ""}" style="width:100%; padding:4px;" /></div>
+          <div><small>12 un.</small><input type="number" step="0.50" id="ep12-${idx}" value="${p.price_12 || ""}" style="width:100%; padding:4px;" /></div>
+        </div>
+        <button class="btn-sm btn-dark" onclick="updateProduct(${idx})">Salvar Alterações</button>
+        <button class="btn-sm btn-red" onclick="deleteProduct(${idx})">Remover</button>
+      `;
       list.appendChild(div);
     });
   }
@@ -479,14 +558,13 @@
       price_6: parseFloat(document.getElementById("ep6-" + idx).value) || null,
       price_12: parseFloat(document.getElementById("ep12-" + idx).value) || null
     };
-    Object.assign(products[idx], updated);
-    if (hasSupabase()) {
-      await fetch(SUPABASE_URL + "/rest/v1/productos?id=eq." + p.id, {
-        method: "PATCH", headers: sbHeaders(), body: JSON.stringify(updated)
-      });
+    if (db) {
+      const { error } = await db.from("productos").update(updated).eq("id", p.id);
+      if (error) { alert("Erro ao atualizar produto: " + error.message); return; }
     } else {
       localStorage.setItem("fb_products_v2", JSON.stringify(products));
     }
+    Object.assign(products[idx], updated);
     renderCatalog(); updateCartBar();
     alert("Atualizado!");
   }
@@ -504,12 +582,10 @@
     };
     if (!newItem.name_pt || isNaN(newItem.price_1)) { alert("Preencha nome e preço unitário."); return; }
 
-    if (hasSupabase()) {
-      const res = await fetch(SUPABASE_URL + "/rest/v1/productos", {
-        method: "POST", headers: sbHeaders(), body: JSON.stringify(newItem)
-      });
-      const data = await res.json();
-      if (Array.isArray(data) && data[0]) products.push(data[0]);
+    if (db) {
+      const { data, error } = await db.from("productos").insert([newItem]).select();
+      if (error) { alert("Erro ao adicionar produto: " + error.message); return; }
+      if (data && data.length > 0) products.push(data[0]);
     } else {
       newItem.id = Date.now();
       products.push(newItem);
@@ -522,47 +598,38 @@
   async function deleteProduct(idx) {
     if (!confirm("Remover produto?")) return;
     const p = products[idx];
-    if (hasSupabase()) {
-      await fetch(SUPABASE_URL + "/rest/v1/productos?id=eq." + p.id, { method: "DELETE", headers: sbHeaders() });
+    if (db) {
+      const { error } = await db.from("productos").delete().eq("id", p.id);
+      if (error) { alert("Erro ao remover: " + error.message); return; }
     }
     products.splice(idx, 1);
-    if (!hasSupabase()) localStorage.setItem("fb_products_v2", JSON.stringify(products));
+    if (!db) localStorage.setItem("fb_products_v2", JSON.stringify(products));
     renderAdminList(); renderCatalog(); updateCartBar();
   }
 
-  function changePin() {
+  async function changePin() {
     const np = document.getElementById("new-pin").value.trim();
     if (np.length < 4) { alert("Mínimo 4 dígitos."); return; }
+
+    if (db) {
+      const { error } = await db
+        .from("config")
+        .update({ valor: np })
+        .eq("clave", "admin_pin");
+
+      if (error) {
+        alert("Erro no Supabase: " + error.message);
+        return;
+      }
+    }
+
     adminPin = np;
     localStorage.setItem("fb_admin_pin", adminPin);
     document.getElementById("new-pin").value = "";
-    alert("Senha alterada!");
+    alert("Senha alterada na nuvem com sucesso!");
   }
 
-  function buildUpdatedHTMLString() {
-    let fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-    fullHtml = fullHtml.replace(
-      /const DEFAULT_PRODUCTS = \[[\s\S]*?\];/,
-      "const DEFAULT_PRODUCTS = " + JSON.stringify(products, null, 2) + ";"
-    );
-    return fullHtml;
-  }
-
-  function downloadUpdatedHTML() {
-    const blob = new Blob([buildUpdatedHTMLString()], { type: "text/html;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "index.html";
-    a.click();
-  }
-
-  function copyUpdatedHTML() {
-    navigator.clipboard.writeText(buildUpdatedHTMLString()).then(() => {
-      alert("Código atualizado copiado!");
-    });
-  }
-
-  loadProducts();
+  initApp();
 </script>
 </body>
 </html>
