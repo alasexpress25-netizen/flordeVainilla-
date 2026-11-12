@@ -73,6 +73,17 @@
     .product-info h3 { font-size: 1rem; margin-bottom: 2px; }
     .product-info p { font-size: 0.82rem; color: var(--brown-light); margin-bottom: 5px; }
     .price-tag { font-weight: 700; font-size: 1.05rem; }
+    .product-photo {
+      width: 92px; height: 92px; flex: none; border-radius: 10px; object-fit: cover;
+      border: 1px solid var(--border); cursor: zoom-in; background: var(--bg);
+    }
+    .photo-lightbox {
+      display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.82);
+      align-items: center; justify-content: center; padding: 16px; cursor: zoom-out;
+    }
+    .photo-lightbox img { max-width: 100%; max-height: 90vh; border-radius: 12px; }
+    .admin-photo { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .admin-photo img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
     .info-btn {
       display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer;
       background: var(--green); color: #fff; font-weight: 700; font-size: .9rem;
@@ -374,6 +385,7 @@
   let adminPin = "1234";
   let currentLogoBase64 = "";
   let pendingLogoBase64 = "";
+  let productPhotos = {}; // { idProducto: dataURL }
 
   const FALLBACK_PRODUCTS = [
     { id: 1, cat: "donas", name_pt: "Rosquinha Artesanal Clássica", name_es: "Dona Artesanal Clásica", description: "Macia por dentro, sequinha e passada no açúcar • Tierna y azucarada", price_1: 3.00, price_3: 8.00, price_6: 15.00, price_12: 28.00 },
@@ -426,6 +438,7 @@
           resCfg.data.forEach(function(row) {
             if (row.clave === "admin_pin") adminPin = row.valor;
             if (row.clave === "logo_url") currentLogoBase64 = row.valor;
+            if (row.clave && row.clave.indexOf("foto_") === 0 && row.valor) productPhotos[row.clave.slice(5)] = row.valor;
           });
         }
       } catch (e) {
@@ -435,6 +448,10 @@
       products = JSON.parse(localStorage.getItem("fb_products_v2")) || FALLBACK_PRODUCTS;
       adminPin = localStorage.getItem("fb_admin_pin") || "1234";
       currentLogoBase64 = localStorage.getItem("fb_logo_url") || "";
+      products.forEach(function(p) {
+        const ph = localStorage.getItem("fb_photo_" + p.id);
+        if (ph) productPhotos[p.id] = ph;
+      });
     }
     applyLogoToHeader(currentLogoBase64);
     renderCatalog();
@@ -519,7 +536,15 @@
 
     container.innerHTML = "";
     categories.forEach(function(cat) {
-      const items = products.filter(function(p) { return p.cat === cat.key; });
+      let items = products.filter(function(p) { return p.cat === cat.key; });
+      if (cat.key === "tortas") {
+        // "Peça cardápio" é o item padrão: só aparece se não houver outros produtos em tortas
+        const isPlaceholder = function(p) {
+          return String(p.name_pt || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().indexOf("peca cardapio") !== -1;
+        };
+        const reais = items.filter(function(p) { return !isPlaceholder(p); });
+        if (reais.length > 0) items = reais;
+      }
       if (items.length === 0) return;
 
       const h2 = document.createElement("h2");
@@ -545,8 +570,13 @@
         const card = document.createElement("div");
         card.className = "product-card";
 
+        const photoHtml = productPhotos[item.id]
+          ? '<img class="product-photo" src="' + productPhotos[item.id] + '" alt="' + itemName.replace(/"/g, "&quot;") + '" loading="lazy" onclick="openPhoto(' + item.id + ')" />'
+          : '';
+
         if (item.cat === "tortas") {
           card.innerHTML =
+            photoHtml +
             '<div class="product-info">' +
               '<h3>' + itemName + '</h3>' +
               '<p>' + (item.description || "") + '</p>' +
@@ -559,6 +589,7 @@
         }
 
         card.innerHTML =
+          photoHtml +
           '<div class="product-info">' +
             '<h3>' + itemName + '</h3>' +
             '<p>' + (item.description || "") + '</p>' +
@@ -574,6 +605,58 @@
         container.appendChild(card);
       });
     });
+  }
+
+  function openPhoto(id) {
+    let lb = document.getElementById("photo-lightbox");
+    if (!lb) {
+      lb = document.createElement("div");
+      lb.id = "photo-lightbox";
+      lb.className = "photo-lightbox";
+      lb.innerHTML = '<img alt="" />';
+      lb.onclick = function() { lb.style.display = "none"; };
+      document.body.appendChild(lb);
+    }
+    lb.querySelector("img").src = productPhotos[id] || "";
+    lb.style.display = "flex";
+  }
+
+  function pickProductPhoto(idx, event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const p = products[idx];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = async function() {
+        const max = 600;
+        const ratio = Math.min(1, max / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.78);
+        if (db) {
+          const res = await db.from("config").upsert({ clave: "foto_" + p.id, valor: dataUrl });
+          if (res.error) { alert("Erro ao salvar foto: " + res.error.message); return; }
+        } else {
+          try { localStorage.setItem("fb_photo_" + p.id, dataUrl); } catch (err) { alert("Foto muito grande para salvar."); return; }
+        }
+        productPhotos[p.id] = dataUrl;
+        renderAdminList(); renderCatalog();
+        alert("Foto salva!");
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function removeProductPhoto(idx) {
+    const p = products[idx];
+    if (db) await db.from("config").delete().eq("clave", "foto_" + p.id);
+    else localStorage.removeItem("fb_photo_" + p.id);
+    delete productPhotos[p.id];
+    renderAdminList(); renderCatalog();
   }
 
   function askCakeInfo(id) {
@@ -672,7 +755,12 @@
           '<div><small>6 un.</small><input type="number" step="0.50" id="ep6-' + idx + '" value="' + (p.price_6 || "") + '" style="width:100%; padding:4px;" /></div>' +
           '<div><small>12 un.</small><input type="number" step="0.50" id="ep12-' + idx + '" value="' + (p.price_12 || "") + '" style="width:100%; padding:4px;" /></div>' +
         '</div>' +
-        '<button type="button" class="btn-sm btn-dark" onclick="updateProduct(' + idx + ')">Salvar Alterações</button> ' +
+        '<div class="admin-photo">' +
+          (productPhotos[p.id] ? '<img src="' + productPhotos[p.id] + '" alt="" />' : '') +
+          '<label style="font-size:0.8rem;">📷 Foto: <input type="file" accept="image/*" style="font-size:0.8rem;" onchange="pickProductPhoto(' + idx + ', event)" /></label>' +
+          (productPhotos[p.id] ? '<button type="button" class="btn-sm btn-red" onclick="removeProductPhoto(' + idx + ')">Remover foto</button>' : '') +
+        '</div>' +
+        '<button type="button" class="btn-sm btn-dark" style="margin-top:8px;" onclick="updateProduct(' + idx + ')">Salvar Alterações</button> ' +
         '<button type="button" class="btn-sm btn-red" onclick="deleteProduct(' + idx + ')">Remover</button>';
       list.appendChild(div);
     });
@@ -726,7 +814,13 @@
   async function deleteProduct(idx) {
     if (!confirm("Remover produto?")) return;
     const p = products[idx];
-    if (db) await db.from("productos").delete().eq("id", p.id);
+    if (db) {
+      await db.from("productos").delete().eq("id", p.id);
+      await db.from("config").delete().eq("clave", "foto_" + p.id);
+    } else {
+      localStorage.removeItem("fb_photo_" + p.id);
+    }
+    delete productPhotos[p.id];
     products.splice(idx, 1);
     if (!db) localStorage.setItem("fb_products_v2", JSON.stringify(products));
     renderAdminList(); renderCatalog(); updateCartBar();
