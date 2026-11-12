@@ -800,7 +800,11 @@
       const div = document.createElement("div");
       div.className = "admin-item";
       div.innerHTML =
-        '<strong>' + p.name_pt + '</strong>' +
+        '<strong>' + String(p.name_pt || "").replace(/&/g, "&amp;").replace(/</g, "&lt;") + '</strong>' +
+        '<div style="margin-top:6px;"><small>Nome (Português)</small>' +
+          '<input type="text" id="enamept-' + idx + '" style="width:100%; padding:4px;" /></div>' +
+        '<div style="margin-top:6px;"><small>Nombre (Español)</small>' +
+          '<input type="text" id="enamees-' + idx + '" style="width:100%; padding:4px;" /></div>' +
         '<div style="margin-top:6px;"><small>Descrição (Português)</small>' +
           '<input type="text" id="edescpt-' + idx + '" style="width:100%; padding:4px;" /></div>' +
         '<div style="margin-top:6px;"><small>Descripción (Español)</small>' +
@@ -820,6 +824,8 @@
         '<button type="button" class="btn-sm btn-red" onclick="deleteProduct(' + idx + ')">Remover</button>';
       list.appendChild(div);
       const dd = splitDesc(p.description);
+      div.querySelector("#enamept-" + idx).value = p.name_pt || "";
+      div.querySelector("#enamees-" + idx).value = p.name_es || "";
       div.querySelector("#edescpt-" + idx).value = dd.pt;
       div.querySelector("#edeses-" + idx).value = dd.es;
     });
@@ -827,7 +833,12 @@
 
   async function updateProduct(idx) {
     const p = products[idx];
+    const namePt = document.getElementById("enamept-" + idx).value.trim();
+    const nameEs = document.getElementById("enamees-" + idx).value.trim();
+    if (!namePt) { alert("O nome (Português) não pode ficar vazio."); return; }
     const updated = {
+      name_pt: namePt,
+      name_es: nameEs || namePt,
       description: (function() {
         const pt = document.getElementById("edescpt-" + idx).value.trim();
         const es = document.getElementById("edeses-" + idx).value.trim();
@@ -845,7 +856,7 @@
     } else {
       localStorage.setItem("fb_products_v2", JSON.stringify(products));
     }
-    renderCatalog(); updateCartBar();
+    renderAdminList(); renderCatalog(); updateCartBar();
     alert("Atualizado!");
   }
 
