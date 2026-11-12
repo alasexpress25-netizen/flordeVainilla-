@@ -73,6 +73,13 @@
     .product-info h3 { font-size: 1rem; margin-bottom: 2px; }
     .product-info p { font-size: 0.82rem; color: var(--brown-light); margin-bottom: 5px; }
     .price-tag { font-weight: 700; font-size: 1.05rem; }
+    .info-btn {
+      display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer;
+      background: var(--green); color: #fff; font-weight: 700; font-size: .9rem;
+      padding: 10px 16px; border-radius: 999px; font-family: inherit;
+      box-shadow: 0 2px 6px rgba(0,0,0,.18); white-space: nowrap;
+    }
+    .info-btn:hover { filter: brightness(1.05); }
     .promo-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
     .promo-pill {
       background: #EAFAF1; color: var(--promo); border: 1px solid #A9DFBF;
@@ -192,8 +199,8 @@
     /* Marquesina: mismo ancho que el badge, sin sobresalir */
     .wa3d .ticker {
       position: absolute; left: 0; width: 100%; top: calc(100% + 18px); height: 18px;
-      overflow: hidden; border-radius: 9px; background: #fff;
-      border: 1px solid rgba(0,0,0,.18); box-shadow: 0 3px 8px rgba(0,0,0,.18);
+      overflow: hidden; border-radius: 9px; background: transparent;
+      border: 0; box-shadow: none;
       display: flex; align-items: center;
     }
     .wa3d .ticker .track {
@@ -537,6 +544,20 @@
         const itemName = currentLang === "pt" ? item.name_pt : item.name_es;
         const card = document.createElement("div");
         card.className = "product-card";
+
+        if (item.cat === "tortas") {
+          card.innerHTML =
+            '<div class="product-info">' +
+              '<h3>' + itemName + '</h3>' +
+              '<p>' + (item.description || "") + '</p>' +
+            '</div>' +
+            '<button type="button" class="info-btn" onclick="askCakeInfo(' + item.id + ')">' +
+              (currentLang === "pt" ? "💬 Pedir informações" : "💬 Pedir información") +
+            '</button>';
+          container.appendChild(card);
+          return;
+        }
+
         card.innerHTML =
           '<div class="product-info">' +
             '<h3>' + itemName + '</h3>' +
@@ -553,6 +574,17 @@
         container.appendChild(card);
       });
     });
+  }
+
+  function askCakeInfo(id) {
+    const item = products.find(function(p) { return p.id === id; });
+    const isPt = currentLang === "pt";
+    const name = item ? (isPt ? item.name_pt : item.name_es) : "";
+    const hasName = name && name.toLowerCase().indexOf("peça cardápio") === -1 && name.toLowerCase().indexOf("pe\u00e7a card") === -1;
+    const msg = isPt
+      ? "Olá! Vim pelo site da Flor de Baunilha e gostaria de mais informações sobre os bolos e tortas por encomenda (sabores, tamanhos, valores e prazos)." + (hasName ? " Item: " + name + "." : "")
+      : "¡Hola! Vengo del sitio de Flor de Baunilha y me gustaría recibir más información sobre las tortas y bolos por encargo (sabores, tamaños, precios y plazos)." + (hasName ? " Producto: " + name + "." : "");
+    window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg), "_blank");
   }
 
   function changeQty(id, delta) {
