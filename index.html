@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flor de Baunilha — Confeitaria Artesanal | Imbituba - SC</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -130,6 +131,7 @@
       font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-top: 6px;
     }
     .btn-dark { background: var(--brown); color: #FFF; }
+    .btn-gold { background: var(--gold); color: #FFF; }
     .btn-red { background: var(--danger); color: #FFF; }
     .logo-preview-admin {
       width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--brown);
@@ -141,8 +143,8 @@
 
 <header>
   <div class="lang-bar">
-    <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">🇧🇷 Português</button>
-    <button class="lang-btn" id="btn-es" onclick="setLang('es')">🇦🇷 Español</button>
+    <button type="button" class="lang-btn active" id="btn-pt" onclick="setLang('pt')">🇧🇷 Português</button>
+    <button type="button" class="lang-btn" id="btn-es" onclick="setLang('es')">🇦🇷 Español</button>
   </div>
   <div class="logo-wrapper" id="header-logo-box">
     <div class="logo-fallback">
@@ -197,7 +199,7 @@
 <footer>
   <p><strong>Flor de Baunilha</strong> • Confeitaria Artesanal</p>
   <p>WhatsApp: (48) 9 9118-0841 • Imbituba - SC</p>
-  <button class="admin-trigger" onclick="openAdmin()">🔒 Admin</button>
+  <button type="button" class="admin-trigger" onclick="openAdmin()">🔒 Admin</button>
 </footer>
 
 <div class="floating-bar">
@@ -205,24 +207,24 @@
     <div style="font-size: 0.78rem; opacity: 0.9;" id="cart-count">0 itens</div>
     <div style="font-size: 1.15rem; font-weight: 700;" id="cart-total">R$ 0,00</div>
   </div>
-  <button class="wa-btn" onclick="sendWhatsAppOrder()" data-pt="📲 Enviar Pedido no WhatsApp" data-es="📲 Enviar Pedido por WhatsApp">📲 Enviar Pedido no WhatsApp</button>
+  <button type="button" class="wa-btn" onclick="sendWhatsAppOrder()" data-pt="📲 Enviar Pedido no WhatsApp" data-es="📲 Enviar Pedido por WhatsApp">📲 Enviar Pedido no WhatsApp</button>
 </div>
 
 <div class="modal-overlay" id="admin-modal">
   <div class="modal-content">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
       <h3>⚙️ Painel Administrador</h3>
-      <button class="btn-sm btn-red" onclick="closeAdmin()">Fechar ✕</button>
+      <button type="button" class="btn-sm btn-red" onclick="closeAdmin()">Fechar ✕</button>
     </div>
 
     <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
       <h4 style="margin-bottom:6px;">🖼️ Logotipo da Página (Sincronizado na Nuvem)</h4>
-      <p style="font-size:0.8rem; color:var(--brown-light);">Selecione a imagem quadrada ou circular do seu logo no PC ou celular:</p>
+      <p style="font-size:0.8rem; color:var(--brown-light);">Selecione a imagem do seu logo no PC ou celular:</p>
       <img id="admin-logo-preview" class="logo-preview-admin" style="display:none;" alt="Preview Logo" />
       <input type="file" id="logo-file-input" accept="image/*" style="margin-top:8px; font-size:0.85rem;" onchange="previewLogoFile(event)" />
       <div>
-        <button class="btn-sm btn-dark" onclick="saveLogoToCloud()">💾 Salvar Logo na Página</button>
-        <button class="btn-sm btn-red" onclick="removeLogoFromCloud()">Remover Logo</button>
+        <button type="button" class="btn-sm btn-dark" onclick="saveLogoToCloud()">💾 Salvar Logo na Página</button>
+        <button type="button" class="btn-sm btn-red" onclick="removeLogoFromCloud()">Remover Logo</button>
       </div>
     </div>
 
@@ -245,17 +247,17 @@
         <div class="form-group"><label>Pack 6 un. (opcional)</label><input type="number" step="0.50" id="new-p6" /></div>
         <div class="form-group"><label>Pack 12 un. (opcional)</label><input type="number" step="0.50" id="new-p12" /></div>
       </div>
-      <button class="btn-sm btn-dark" onclick="addProduct()">Salvar Produto</button>
+      <button type="button" class="btn-sm btn-dark" onclick="addProduct()">Salvar Produto</button>
     </div>
 
     <h4 style="margin-bottom:8px;">📦 Editar Preços e Descontos Ativos</h4>
     <div id="admin-product-list"></div>
 
-    <div style="background:#FAF6F0; padding:10px; border-radius:10px; border:1px solid var(--border); margin-top:12px;">
+    <form onsubmit="event.preventDefault(); changePin();" style="background:#FAF6F0; padding:10px; border-radius:10px; border:1px solid var(--border); margin-top:12px;">
       <h4>🔑 Alterar Senha Admin (Sincronizada)</h4>
-      <input type="password" id="new-pin" placeholder="Nova senha (mín. 4 dígitos)" style="padding:6px; margin-top:6px; border-radius:6px; border:1px solid #ccc;" />
-      <button class="btn-sm btn-dark" onclick="changePin()">Atualizar Senha</button>
-    </div>
+      <input type="password" id="new-pin" autocomplete="new-password" placeholder="Nova senha (mín. 4 dígitos)" style="padding:6px; margin-top:6px; border-radius:6px; border:1px solid #ccc;" />
+      <button type="submit" class="btn-sm btn-dark">Atualizar Senha</button>
+    </form>
   </div>
 </div>
 
@@ -291,36 +293,41 @@
     const box = document.getElementById("header-logo-box");
     const adminPrev = document.getElementById("admin-logo-preview");
     if (dataUrl && dataUrl.startsWith("data:image")) {
-      box.innerHTML = `<img src="${dataUrl}" alt="Flor de Baunilha" />`;
+      box.innerHTML = '<img src="' + dataUrl + '" alt="Flor de Baunilha" />';
       adminPrev.src = dataUrl;
       adminPrev.style.display = "block";
     } else {
-      box.innerHTML = `<div class="logo-fallback"><span>🌸</span><strong>Flor de Baunilha</strong><small>Feito com amor</small></div>`;
+      box.innerHTML = '<div class="logo-fallback"><span>🌸</span><strong>Flor de Baunilha</strong><small>Feito com amor</small></div>';
       adminPrev.style.display = "none";
     }
   }
 
   function calcItemTotal(item, qty) {
     if (qty <= 0) return { total: 0, saved: 0 };
-    let rem = qty, total = 0;
+    let rem = qty;
+    let total = 0;
     if (item.price_12 && rem >= 12) { total += Math.floor(rem / 12) * Number(item.price_12); rem %= 12; }
     if (item.price_6 && rem >= 6) { total += Math.floor(rem / 6) * Number(item.price_6); rem %= 6; }
     if (item.price_3 && rem >= 3) { total += Math.floor(rem / 3) * Number(item.price_3); rem %= 3; }
     total += rem * Number(item.price_1);
-    return { total, saved: Math.max(0, qty * Number(item.price_1) - total) };
+    return { total: total, saved: Math.max(0, qty * Number(item.price_1) - total) };
   }
 
   async function initApp() {
     if (db) {
-      const { data: prodData, error: prodErr } = await db.from("productos").select("*").eq("activo", true).order("id", { ascending: true });
-      products = (!prodErr && prodData && prodData.length > 0) ? prodData : FALLBACK_PRODUCTS;
+      try {
+        const resProd = await db.from("productos").select("*").eq("activo", true).order("id", { ascending: true });
+        products = (!resProd.error && resProd.data && resProd.data.length > 0) ? resProd.data : FALLBACK_PRODUCTS;
 
-      const { data: cfgRows } = await db.from("config").select("*");
-      if (cfgRows) {
-        cfgRows.forEach(row => {
-          if (row.clave === "admin_pin") adminPin = row.valor;
-          if (row.clave === "logo_url") currentLogoBase64 = row.valor;
-        });
+        const resCfg = await db.from("config").select("*");
+        if (resCfg.data) {
+          resCfg.data.forEach(function(row) {
+            if (row.clave === "admin_pin") adminPin = row.valor;
+            if (row.clave === "logo_url") currentLogoBase64 = row.valor;
+          });
+        }
+      } catch (e) {
+        products = FALLBACK_PRODUCTS;
       }
     } else {
       products = JSON.parse(localStorage.getItem("fb_products_v2")) || FALLBACK_PRODUCTS;
@@ -333,8 +340,9 @@
   }
 
   function previewLogoFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+    const files = event.target.files;
+    if (!files || !files[0]) return;
+    const file = files[0];
     const reader = new FileReader();
     reader.onload = function(e) {
       const img = new Image();
@@ -344,10 +352,9 @@
         canvas.width = size;
         canvas.height = size;
         const ctx = canvas.getContext("2d");
-        // Si es imagen doble horizontal (etiqueta), recorta el círculo izquierdo
-        if (img.width > img.height * 1.25) {
-          const side = img.height;
-          ctx.drawImage(img, 0, 0, side, side, 0, 0, size, size);
+        if (img.width > img.height * 1.3) {
+          const cropSize = img.height;
+          ctx.drawImage(img, 0, 0, cropSize, cropSize, 0, 0, size, size);
         } else {
           const minSide = Math.min(img.width, img.height);
           const sx = (img.width - minSide) / 2;
@@ -369,29 +376,22 @@
       alert("Selecione primeiro uma imagem do seu PC ou celular.");
       return;
     }
-    if (db) {
-      const { error } = await db.from("config").upsert({ clave: "logo_url", valor: pendingLogoBase64 }, { onConflict: "clave" });
-      if (error) {
-        alert("Erro ao salvar logo no Supabase: " + error.message);
-        return;
-      }
-    } else {
-      localStorage.setItem("fb_logo_url", pendingLogoBase64);
-    }
     currentLogoBase64 = pendingLogoBase64;
+    if (db) {
+      const res = await db.from("config").upsert({ clave: "logo_url", valor: currentLogoBase64 });
+      if (res.error) { alert("Erro ao salvar logo: " + res.error.message); return; }
+    } else {
+      localStorage.setItem("fb_logo_url", currentLogoBase64);
+    }
     applyLogoToHeader(currentLogoBase64);
     alert("Logotipo atualizado na nuvem com sucesso!");
   }
 
   async function removeLogoFromCloud() {
-    if (db) {
-      const { error } = await db.from("config").delete().eq("clave", "logo_url");
-      if (error) { alert("Erro ao remover logo: " + error.message); return; }
-    } else {
-      localStorage.removeItem("fb_logo_url");
-    }
     currentLogoBase64 = "";
     pendingLogoBase64 = "";
+    if (db) await db.from("config").delete().eq("clave", "logo_url");
+    else localStorage.removeItem("fb_logo_url");
     applyLogoToHeader("");
     alert("Logotipo removido.");
   }
@@ -400,7 +400,9 @@
     currentLang = lang;
     document.getElementById("btn-pt").classList.toggle("active", lang === "pt");
     document.getElementById("btn-es").classList.toggle("active", lang === "es");
-    document.querySelectorAll("[data-pt]").forEach(el => el.textContent = el.getAttribute("data-" + lang));
+    document.querySelectorAll("[data-pt]").forEach(function(el) {
+      el.textContent = el.getAttribute("data-" + lang);
+    });
     renderCatalog();
     updateCartBar();
   }
@@ -414,8 +416,8 @@
     ];
 
     container.innerHTML = "";
-    categories.forEach(cat => {
-      const items = products.filter(p => p.cat === cat.key);
+    categories.forEach(function(cat) {
+      const items = products.filter(function(p) { return p.cat === cat.key; });
       if (items.length === 0) return;
 
       const h2 = document.createElement("h2");
@@ -423,34 +425,36 @@
       h2.textContent = currentLang === "pt" ? cat.title_pt : cat.title_es;
       container.appendChild(h2);
 
-      items.forEach(item => {
+      items.forEach(function(item) {
         const qty = cart[item.id] || 0;
         const calc = calcItemTotal(item, qty);
         let pills = "";
-        if (item.price_3) pills += `<span class="promo-pill">3x ${formatBRL(item.price_3)}</span>`;
-        if (item.price_6) pills += `<span class="promo-pill">6x ${formatBRL(item.price_6)}</span>`;
-        if (item.price_12) pills += `<span class="promo-pill">12x ${formatBRL(item.price_12)}</span>`;
+        if (item.price_3) pills += '<span class="promo-pill">3x ' + formatBRL(item.price_3) + '</span>';
+        if (item.price_6) pills += '<span class="promo-pill">6x ' + formatBRL(item.price_6) + '</span>';
+        if (item.price_12) pills += '<span class="promo-pill">12x ' + formatBRL(item.price_12) + '</span>';
 
-        const subHtml = qty > 0
-          ? `<div class="subtotal-line">Subtotal: ${formatBRL(calc.total)}${calc.saved > 0 ? ` (${currentLang === "pt" ? "Desconto aplicado: -" : "Ahorro: -"}${formatBRL(calc.saved)})` : ""}</div>`
-          : "";
+        let subHtml = "";
+        if (qty > 0) {
+          const savedTxt = calc.saved > 0 ? (" (" + (currentLang === "pt" ? "Desconto aplicado: -" : "Ahorro: -") + formatBRL(calc.saved) + ")") : "";
+          subHtml = '<div class="subtotal-line">Subtotal: ' + formatBRL(calc.total) + savedTxt + '</div>';
+        }
 
+        const itemName = currentLang === "pt" ? item.name_pt : item.name_es;
         const card = document.createElement("div");
         card.className = "product-card";
-        card.innerHTML = `
-          <div class="product-info">
-            <h3>${currentLang === "pt" ? item.name_pt : item.name_es}</h3>
-            <p>${item.description || ""}</p>
-            <span class="price-tag">${formatBRL(item.price_1)} <small style="font-weight:400;">/ un.</small></span>
-            ${pills ? `<div class="promo-pills">${pills}</div>` : ""}
-            ${subHtml}
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
-            <span class="qty-val">${qty}</span>
-            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-          </div>
-        `;
+        card.innerHTML =
+          '<div class="product-info">' +
+            '<h3>' + itemName + '</h3>' +
+            '<p>' + (item.description || "") + '</p>' +
+            '<span class="price-tag">' + formatBRL(item.price_1) + ' <small style="font-weight:400;">/ un.</small></span>' +
+            (pills ? '<div class="promo-pills">' + pills + '</div>' : '') +
+            subHtml +
+          '</div>' +
+          '<div class="qty-control">' +
+            '<button type="button" class="qty-btn" onclick="changeQty(' + item.id + ', -1)">−</button>' +
+            '<span class="qty-val">' + qty + '</span>' +
+            '<button type="button" class="qty-btn" onclick="changeQty(' + item.id + ', 1)">+</button>' +
+          '</div>';
         container.appendChild(card);
       });
     });
@@ -464,7 +468,7 @@
 
   function updateCartBar() {
     let totalItems = 0, totalPrice = 0;
-    products.forEach(p => {
+    products.forEach(function(p) {
       const q = cart[p.id] || 0;
       totalItems += q;
       totalPrice += calcItemTotal(p, q).total;
@@ -474,7 +478,7 @@
   }
 
   function sendWhatsAppOrder() {
-    const selected = products.filter(p => (cart[p.id] || 0) > 0);
+    const selected = products.filter(function(p) { return (cart[p.id] || 0) > 0; });
     if (selected.length === 0) {
       alert(currentLang === "pt" ? "Selecione pelo menos 1 produto." : "Seleccioná al menos 1 producto.");
       return;
@@ -503,21 +507,19 @@
     if (notes) lines.push("📝 *Obs:* " + notes);
     lines.push("", "🛒 *Itens do Pedido:*");
 
-    selected.forEach(p => {
+    selected.forEach(function(p) {
       const q = cart[p.id];
       const calc = calcItemTotal(p, q);
       total += calc.total;
       const itemName = currentLang === "pt" ? p.name_pt : p.name_es;
-      const promoNote = calc.saved > 0 ? ` _(desconto -${formatBRL(calc.saved)})_` : "";
-      lines.push(`• ${q}x ${itemName} — ${formatBRL(calc.total)}${promoNote}`);
+      const promoNote = calc.saved > 0 ? (" _(desconto -" + formatBRL(calc.saved) + ")_") : "";
+      lines.push("• " + q + "x " + itemName + " — " + formatBRL(calc.total) + promoNote);
     });
 
     lines.push("", "💰 *TOTAL A PAGAR: " + formatBRL(total) + "*");
-    window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("
-")), "_blank");
+    window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("\n")), "_blank");
   }
 
-  // --- ADMIN ---
   function openAdmin() {
     const entered = prompt("Senha Admin:");
     if (entered === adminPin) {
@@ -532,20 +534,19 @@
   function renderAdminList() {
     const list = document.getElementById("admin-product-list");
     list.innerHTML = "";
-    products.forEach((p, idx) => {
+    products.forEach(function(p, idx) {
       const div = document.createElement("div");
       div.className = "admin-item";
-      div.innerHTML = `
-        <strong>${p.name_pt}</strong>
-        <div class="grid-4" style="margin-top:6px;">
-          <div><small>1 un.</small><input type="number" step="0.50" id="ep1-${idx}" value="${p.price_1}" style="width:100%; padding:4px;" /></div>
-          <div><small>3 un.</small><input type="number" step="0.50" id="ep3-${idx}" value="${p.price_3 || ""}" style="width:100%; padding:4px;" /></div>
-          <div><small>6 un.</small><input type="number" step="0.50" id="ep6-${idx}" value="${p.price_6 || ""}" style="width:100%; padding:4px;" /></div>
-          <div><small>12 un.</small><input type="number" step="0.50" id="ep12-${idx}" value="${p.price_12 || ""}" style="width:100%; padding:4px;" /></div>
-        </div>
-        <button class="btn-sm btn-dark" onclick="updateProduct(${idx})">Salvar Alterações</button>
-        <button class="btn-sm btn-red" onclick="deleteProduct(${idx})">Remover</button>
-      `;
+      div.innerHTML =
+        '<strong>' + p.name_pt + '</strong>' +
+        '<div class="grid-4" style="margin-top:6px;">' +
+          '<div><small>1 un.</small><input type="number" step="0.50" id="ep1-' + idx + '" value="' + p.price_1 + '" style="width:100%; padding:4px;" /></div>' +
+          '<div><small>3 un.</small><input type="number" step="0.50" id="ep3-' + idx + '" value="' + (p.price_3 || "") + '" style="width:100%; padding:4px;" /></div>' +
+          '<div><small>6 un.</small><input type="number" step="0.50" id="ep6-' + idx + '" value="' + (p.price_6 || "") + '" style="width:100%; padding:4px;" /></div>' +
+          '<div><small>12 un.</small><input type="number" step="0.50" id="ep12-' + idx + '" value="' + (p.price_12 || "") + '" style="width:100%; padding:4px;" /></div>' +
+        '</div>' +
+        '<button type="button" class="btn-sm btn-dark" onclick="updateProduct(' + idx + ')">Salvar Alterações</button> ' +
+        '<button type="button" class="btn-sm btn-red" onclick="deleteProduct(' + idx + ')">Remover</button>';
       list.appendChild(div);
     });
   }
@@ -558,13 +559,13 @@
       price_6: parseFloat(document.getElementById("ep6-" + idx).value) || null,
       price_12: parseFloat(document.getElementById("ep12-" + idx).value) || null
     };
+    Object.assign(products[idx], updated);
     if (db) {
-      const { error } = await db.from("productos").update(updated).eq("id", p.id);
-      if (error) { alert("Erro ao atualizar produto: " + error.message); return; }
+      const res = await db.from("productos").update(updated).eq("id", p.id);
+      if (res.error) { alert("Erro: " + res.error.message); return; }
     } else {
       localStorage.setItem("fb_products_v2", JSON.stringify(products));
     }
-    Object.assign(products[idx], updated);
     renderCatalog(); updateCartBar();
     alert("Atualizado!");
   }
@@ -583,9 +584,9 @@
     if (!newItem.name_pt || isNaN(newItem.price_1)) { alert("Preencha nome e preço unitário."); return; }
 
     if (db) {
-      const { data, error } = await db.from("productos").insert([newItem]).select();
-      if (error) { alert("Erro ao adicionar produto: " + error.message); return; }
-      if (data && data.length > 0) products.push(data[0]);
+      const res = await db.from("productos").insert([newItem]).select();
+      if (res.error) { alert("Erro: " + res.error.message); return; }
+      if (res.data && res.data[0]) products.push(res.data[0]);
     } else {
       newItem.id = Date.now();
       products.push(newItem);
@@ -598,10 +599,7 @@
   async function deleteProduct(idx) {
     if (!confirm("Remover produto?")) return;
     const p = products[idx];
-    if (db) {
-      const { error } = await db.from("productos").delete().eq("id", p.id);
-      if (error) { alert("Erro ao remover: " + error.message); return; }
-    }
+    if (db) await db.from("productos").delete().eq("id", p.id);
     products.splice(idx, 1);
     if (!db) localStorage.setItem("fb_products_v2", JSON.stringify(products));
     renderAdminList(); renderCatalog(); updateCartBar();
@@ -610,19 +608,10 @@
   async function changePin() {
     const np = document.getElementById("new-pin").value.trim();
     if (np.length < 4) { alert("Mínimo 4 dígitos."); return; }
-
     if (db) {
-      const { error } = await db
-        .from("config")
-        .update({ valor: np })
-        .eq("clave", "admin_pin");
-
-      if (error) {
-        alert("Erro no Supabase: " + error.message);
-        return;
-      }
+      const res = await db.from("config").update({ valor: np }).eq("clave", "admin_pin");
+      if (res.error) { alert("Erro no Supabase: " + res.error.message); return; }
     }
-
     adminPin = np;
     localStorage.setItem("fb_admin_pin", adminPin);
     document.getElementById("new-pin").value = "";
