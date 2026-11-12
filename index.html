@@ -4,781 +4,565 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flor de Baunilha — Confeitaria Artesanal | Imbituba - SC</title>
-  <meta name="description" content="Rosquinhas Noruegas artesanais (Smultringer), pães salgados caseiros e bolos por encomenda em Imbituba - SC. Feito com amor." />
   <style>
     :root {
-      --bg-cream: #FAF6F0;
-      --card-bg: #FFFFFF;
-      --brown-dark: #4A2E1B;
-      --brown-mid: #6E472B;
-      --gold-accent: #C89B63;
-      --gold-light: #EFE3D0;
-      --text-muted: #7A6555;
-      --wa-green: #25D366;
-      --wa-green-dark: #1EBE5D;
-      --border-soft: #E6D8C5;
-      --shadow: 0 6px 20px rgba(74, 46, 27, 0.08);
+      --bg: #FAF6F0;
+      --card: #FFFFFF;
+      --brown: #4A2E1B;
+      --brown-light: #6E472B;
+      --gold: #C89B63;
+      --border: #E5D8C5;
+      --green: #25D366;
+      --promo: #1E8449;
+      --danger: #C0392B;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-cream);
-      color: var(--brown-dark);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--brown);
       line-height: 1.5;
-      padding-bottom: 105px;
+      padding-bottom: 95px;
     }
-
-    h1, h2, h3, .serif {
-      font-family: Georgia, "Times New Roman", serif;
+    header {
+      text-align: center;
+      padding: 26px 16px 20px;
+      border-bottom: 2px dashed var(--gold);
+      background: linear-gradient(180deg, #F4ECE1 0%, #FAF6F0 100%);
     }
-
-    /* Top Language Bar */
-    .top-bar {
-      background-color: var(--brown-dark);
-      color: var(--bg-cream);
-      padding: 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .lang-switch {
-      display: flex;
-      gap: 6px;
-    }
-
+    .lang-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; }
     .lang-btn {
-      background: transparent;
-      border: 1px solid var(--gold-accent);
-      color: var(--bg-cream);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
+      background: var(--card); border: 1.5px solid var(--brown); color: var(--brown);
+      padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
     }
-
-    .lang-btn.active {
-      background-color: var(--gold-accent);
-      color: var(--brown-dark);
+    .lang-btn.active { background: var(--brown); color: var(--bg); }
+    .brand-circle {
+      width: 110px; height: 110px; margin: 0 auto 10px; border: 2.5px solid var(--brown);
+      border-radius: 50%; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; background: var(--bg); padding: 8px;
     }
-
-    /* Hero Header */
-    .hero {
-      text-align: center;
-      padding: 28px 18px 24px;
-      background: radial-gradient(circle at top, #FFFDF9 0%, var(--bg-cream) 100%);
-      border-bottom: 1px dashed var(--gold-accent);
+    .brand-circle span.flower { font-size: 1.5rem; line-height: 1; }
+    .brand-circle strong { font-family: Georgia, serif; font-size: 0.92rem; line-height: 1.1; }
+    .brand-circle small { font-size: 0.65rem; font-style: italic; }
+    h1 { font-family: Georgia, serif; font-size: 1.85rem; }
+    .subtitle { font-size: 0.92rem; color: var(--brown-light); font-weight: 500; }
+    .container { max-width: 680px; margin: 0 auto; padding: 16px 14px; }
+    .intro-box {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 15px; margin-bottom: 18px; font-size: 0.9rem;
     }
-
-    .logo-circle {
-      width: 92px;
-      height: 92px;
-      margin: 0 auto 12px;
-      border-radius: 50%;
-      border: 2px solid var(--brown-dark);
-      background-color: #FFFDF9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow);
+    h2.cat-title {
+      font-family: Georgia, serif; font-size: 1.2rem; margin: 18px 0 10px;
+      padding-bottom: 4px; border-bottom: 1.5px solid var(--gold);
     }
-
-    .hero h1 {
-      font-size: 2.1rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: var(--brown-dark);
-      margin-bottom: 2px;
-    }
-
-    .hero .subtitle {
-      font-size: 0.85rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--brown-mid);
-      font-weight: 600;
-    }
-
-    .hero .love-tag {
-      font-family: Georgia, serif;
-      font-style: italic;
-      color: var(--gold-accent);
-      font-size: 1.05rem;
-      margin-top: 4px;
-    }
-
-    .location-pill {
-      display: inline-block;
-      margin-top: 10px;
-      background-color: var(--gold-light);
-      color: var(--brown-dark);
-      padding: 4px 14px;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
-
-    .container {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 18px 16px;
-    }
-
-    /* Story Card */
-    .story-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-soft);
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 22px;
-      box-shadow: var(--shadow);
-    }
-
-    .story-card h2 {
-      font-size: 1.25rem;
-      margin-bottom: 8px;
-      color: var(--brown-dark);
-    }
-
-    .story-card p {
-      font-size: 0.94rem;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .badge {
-      background-color: var(--bg-cream);
-      border: 1px solid var(--border-soft);
-      color: var(--brown-mid);
-      font-size: 0.78rem;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
-
-    /* Section Headings */
-    .section-title {
-      font-size: 1.35rem;
-      margin: 22px 0 12px;
-      padding-bottom: 6px;
-      border-bottom: 2px solid var(--gold-accent);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    /* Product Cards */
-    .product-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
     .product-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-soft);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 3px 10px rgba(74, 46, 27, 0.04);
+      background: var(--card); border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between;
+      align-items: center; gap: 10px;
     }
-
-    .product-card.promo {
-      border: 2px solid var(--gold-accent);
-      background-color: #FFFDF8;
+    .product-info { flex: 1; }
+    .product-info h3 { font-size: 1rem; margin-bottom: 2px; }
+    .product-info p { font-size: 0.82rem; color: var(--brown-light); margin-bottom: 5px; }
+    .price-tag { font-weight: 700; font-size: 1.05rem; }
+    .promo-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+    .promo-pill {
+      background: #EAFAF1; color: var(--promo); border: 1px solid #A9DFBF;
+      font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 8px;
     }
-
-    .promo-tag {
-      display: inline-block;
-      background-color: var(--gold-accent);
-      color: #FFF;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-bottom: 4px;
-    }
-
-    .product-info {
-      flex: 1;
-    }
-
-    .product-info h3 {
-      font-size: 1.05rem;
-      color: var(--brown-dark);
-      margin-bottom: 3px;
-    }
-
-    .product-info p {
-      font-size: 0.84rem;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .price {
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--brown-mid);
-    }
-
-    /* Stepper Controls */
+    .subtotal-line { font-size: 0.8rem; color: var(--promo); font-weight: 700; margin-top: 4px; }
     .qty-control {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background-color: var(--bg-cream);
-      padding: 5px 8px;
-      border-radius: 30px;
-      border: 1px solid var(--border-soft);
+      display: flex; align-items: center; gap: 8px; background: var(--bg);
+      padding: 4px 8px; border-radius: 20px; border: 1px solid var(--border);
     }
-
     .qty-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: none;
-      background-color: var(--brown-dark);
-      color: #FFF;
-      font-size: 1.15rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
+      width: 28px; height: 28px; border-radius: 50%; border: none;
+      background: var(--brown); color: #FFF; font-size: 1.1rem; font-weight: bold; cursor: pointer;
     }
-
-    .qty-btn:active {
-      transform: scale(0.94);
+    .qty-val { font-weight: 700; min-width: 18px; text-align: center; }
+    .checkout-box {
+      background: var(--card); border: 2px solid var(--gold);
+      border-radius: 14px; padding: 16px; margin-top: 24px;
     }
-
-    .qty-val {
-      min-width: 20px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1rem;
+    .checkout-box h2 { font-family: Georgia, serif; font-size: 1.2rem; margin-bottom: 12px; }
+    .form-group { margin-bottom: 11px; }
+    .form-group label { display: block; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 9px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 0.95rem; background: var(--bg); color: var(--brown);
     }
-
-    /* Checkout Form */
-    .checkout-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-soft);
-      border-radius: 16px;
-      padding: 18px;
-      margin-top: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.88rem;
-      font-weight: 600;
-      margin-bottom: 5px;
-      color: var(--brown-dark);
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border-soft);
-      border-radius: 10px;
-      font-size: 0.95rem;
-      background-color: #FFFDF9;
-      color: var(--brown-dark);
-      font-family: inherit;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--gold-accent);
-    }
-
-    /* Floating Bottom Bar */
     .floating-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: #FFFDF9;
-      border-top: 2px solid var(--gold-accent);
-      padding: 12px 16px;
-      box-shadow: 0 -4px 18px rgba(74, 46, 27, 0.12);
-      z-index: 99;
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--brown); color: #FFF;
+      padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 -4px 14px rgba(0,0,0,0.18); z-index: 100;
     }
-
-    .floating-inner {
-      max-width: 680px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .total-box span {
-      display: block;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .total-box strong {
-      font-size: 1.25rem;
-      color: var(--brown-dark);
-    }
-
     .wa-btn {
-      background-color: var(--wa-green);
-      color: #FFF;
-      border: none;
-      border-radius: 30px;
-      padding: 12px 20px;
-      font-size: 0.96rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
-      transition: background 0.2s;
+      background: var(--green); color: #FFF; border: none; padding: 10px 16px;
+      border-radius: 24px; font-weight: 700; font-size: 0.92rem; cursor: pointer;
     }
-
-    .wa-btn:hover {
-      background-color: var(--wa-green-dark);
+    footer { text-align: center; padding: 24px 16px; font-size: 0.82rem; color: var(--brown-light); }
+    .admin-trigger {
+      background: none; border: 1px solid var(--border); color: var(--brown-light);
+      padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; margin-top: 10px; cursor: pointer;
     }
-
-    footer {
-      text-align: center;
-      padding: 20px 16px 10px;
-      font-size: 0.82rem;
-      color: var(--text-muted);
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      z-index: 200; overflow-y: auto; padding: 12px;
     }
+    .modal-content {
+      background: var(--card); max-width: 620px; margin: 16px auto;
+      border-radius: 14px; padding: 16px; border: 2px solid var(--brown);
+    }
+    .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .admin-item {
+      border: 1px solid var(--border); border-radius: 8px; padding: 10px;
+      margin-bottom: 10px; background: var(--bg);
+    }
+    .btn-sm {
+      padding: 6px 10px; border-radius: 6px; border: none;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 6px;
+    }
+    .btn-dark { background: var(--brown); color: #FFF; }
+    .btn-gold { background: var(--gold); color: #FFF; }
+    .btn-red { background: var(--danger); color: #FFF; }
   </style>
 </head>
 <body>
 
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <span>📍 Imbituba • Santa Catarina</span>
-    <div class="lang-switch">
-      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">🇧🇷 Português</button>
-      <button class="lang-btn" id="btn-es" onclick="setLang('es')">🇦🇷 Español</button>
-    </div>
+<header>
+  <div class="lang-bar">
+    <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">🇧🇷 Português</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">🇦🇷 Español</button>
+  </div>
+  <div class="brand-circle">
+    <span class="flower">🌸</span>
+    <strong>Flor de Baunilha</strong>
+    <small>Feito com amor</small>
+  </div>
+  <h1>Flor de Baunilha</h1>
+  <p class="subtitle" data-pt="Confeitaria Artesanal • Imbituba - SC" data-es="Pastelería Artesanal • Imbituba - SC">Confeitaria Artesanal • Imbituba - SC</p>
+</header>
+
+<div class="container">
+  <div class="intro-box">
+    <p data-pt="Selecione a quantidade desejada de cada produto: os descontos por 3, 6 e 12 unidades são calculados automaticamente!"
+       data-es="Seleccioná la cantidad deseada de cada producto: ¡los descuentos por 3, 6 y 12 unidades se calculan automáticamente!">
+      Selecione a quantidade desejada de cada produto: os descontos por 3, 6 e 12 unidades são calculados automaticamente!
+    </p>
   </div>
 
-  <!-- Hero Section -->
-  <header class="hero">
-    <div class="logo-circle" aria-hidden="true">
-      <svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M32 8C28 16 26 22 32 28C38 22 36 16 32 8Z" stroke="#4A2E1B" stroke-width="2" fill="#EFE3D0"/>
-        <path d="M10 24C18 22 24 23 29 30C21 33 15 30 10 24Z" stroke="#4A2E1B" stroke-width="2" fill="#EFE3D0"/>
-        <path d="M54 24C46 22 40 23 35 30C43 33 49 30 54 24Z" stroke="#4A2E1B" stroke-width="2" fill="#EFE3D0"/>
-        <path d="M16 48C20 40 25 36 31 35C30 43 24 47 16 48Z" stroke="#4A2E1B" stroke-width="2" fill="#EFE3D0"/>
-        <path d="M48 48C44 40 39 36 33 35C34 43 40 47 48 48Z" stroke="#4A2E1B" stroke-width="2" fill="#EFE3D0"/>
-        <circle cx="32" cy="32" r="5" fill="#C89B63" stroke="#4A2E1B" stroke-width="2"/>
-        <path d="M22 54C28 50 36 50 42 54" stroke="#4A2E1B" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+  <div id="catalog-container"></div>
+
+  <div class="checkout-box" id="checkout-section">
+    <h2 data-pt="📋 Seus Dados para o Pedido" data-es="📋 Tus Datos para el Pedido">📋 Seus Dados para o Pedido</h2>
+    <div class="form-group">
+      <label data-pt="Seu Nome Completo *" data-es="Tu Nombre Completo *">Seu Nome Completo *</label>
+      <input type="text" id="cust-name" placeholder="Ex: João Silva" />
     </div>
-    <h1>Flor de Baunilha</h1>
-    <div class="subtitle" data-i18n="subtitle">Confeitaria Artesanal</div>
-    <div class="love-tag" data-i18n="love">~ Feito com amor ~</div>
-    <div class="location-pill" data-i18n="deliveryPill">🏖️ Entrega na Praia, Pousadas e Encomendas</div>
-  </header>
+    <div class="form-group">
+      <label data-pt="Seu WhatsApp / Telefone *" data-es="Tu WhatsApp / Teléfono *">Seu WhatsApp / Telefone *</label>
+      <input type="tel" id="cust-phone" placeholder="Ex: (48) 9 9999-9999" />
+    </div>
+    <div class="form-group">
+      <label data-pt="Onde entregamos? (Praia, Pousada ou Endereço) *" data-es="¿Dónde entregamos? (Playa, Posada o Dirección) *">Onde entregamos? (Praia, Pousada ou Endereço) *</label>
+      <input type="text" id="cust-location" placeholder="Ex: Praia da Vila / Pousada..." />
+    </div>
+    <div class="form-group">
+      <label data-pt="Forma de Pagamento" data-es="Forma de Pago">Forma de Pagamento</label>
+      <select id="cust-payment">
+        <option value="Pix">Pix</option>
+        <option value="Cartão Débito/Crédito (Aproximação)">Cartão Débito/Crédito (Aproximação)</option>
+        <option value="Dinheiro / Efectivo">Dinheiro / Efectivo</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label data-pt="Observações (opcional)" data-es="Observaciones (opcional)">Observações (opcional)</label>
+      <textarea id="cust-notes" rows="2"></textarea>
+    </div>
+  </div>
+</div>
 
-  <main class="container">
+<footer>
+  <p><strong>Flor de Baunilha</strong> • Confeitaria Artesanal</p>
+  <p>WhatsApp: (48) 9 9118-0841 • Imbituba - SC</p>
+  <button class="admin-trigger" onclick="openAdmin()">🔒 Admin</button>
+</footer>
 
-    <!-- Story / Value Proposition -->
-    <section class="story-card">
-      <h2 data-i18n="storyTitle">A Verdadeira Receita Noruega em Imbituba</h2>
-      <p data-i18n="storyP1">
-        Trouxemos a autêntica tradição escandinava dos <strong>Smultringer</strong>: rosquinhas artesanais extremamente macias por dentro, levemente douradas por fora e perfumadas com um toque especial de cardamomo. Diferente das donas comuns, nossa massa leva creme fresco e não absorve óleo, ficando sequinha e perfeita para acompanhar seu café ou chimarrão na areia.
-      </p>
-      <p data-i18n="storyP2">
-        Também preparamos <strong>pães salgados artesanais</strong> assados em fôrma individual e <strong>bolos caseiros</strong> feitos sob encomenda.
-      </p>
-      <div class="badges">
-        <span class="badge" data-i18n="badge1">🇳🇴 Receita Noruega Original</span>
-        <span class="badge" data-i18n="badge2">✨ Sequinhas e Macias</span>
-        <span class="badge" data-i18n="badge3">💳 Aceitamos Pix e Cartão</span>
-      </div>
-    </section>
+<div class="floating-bar">
+  <div>
+    <div style="font-size: 0.78rem; opacity: 0.9;" id="cart-count">0 itens</div>
+    <div style="font-size: 1.15rem; font-weight: 700;" id="cart-total">R$ 0,00</div>
+  </div>
+  <button class="wa-btn" onclick="sendWhatsAppOrder()" data-pt="📲 Enviar Pedido no WhatsApp" data-es="📲 Enviar Pedido por WhatsApp">📲 Enviar Pedido no WhatsApp</button>
+</div>
 
-    <!-- Catalog: Sweet / Norwegian Donuts -->
-    <h2 class="section-title" data-i18n="catDonuts">🍩 Rosquinhas Noruegas (Doce)</h2>
-    <div class="product-list" id="donuts-list"></div>
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3>⚙️ Painel Administrador</h3>
+      <button class="btn-sm btn-red" onclick="closeAdmin()">Fechar ✕</button>
+    </div>
 
-    <!-- Catalog: Savory Breads -->
-    <h2 class="section-title" data-i18n="catBreads">🥖 Pães Artesanais Salgados</h2>
-    <div class="product-list" id="breads-list"></div>
-
-    <!-- Catalog: Cakes by Order -->
-    <h2 class="section-title" data-i18n="catCakes">🎂 Bolos e Tortas por Encomenda</h2>
-    <div class="product-list" id="cakes-list"></div>
-
-    <!-- Order Details Form -->
-    <section class="checkout-card" id="checkout-section">
-      <h2 class="serif" style="margin-bottom: 12px; font-size: 1.25rem;" data-i18n="orderFormTitle">📋 Finalizar Pedido pelo WhatsApp</h2>
-      
+    <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
+      <h4 style="margin-bottom:8px;">➕ Novo Produto com Descontos por Quantidade</h4>
       <div class="form-group">
-        <label for="cust-name" data-i18n="labelName">Seu Nome *</label>
-        <input type="text" id="cust-name" placeholder="Ex: Maria / Juan" />
-      </div>
-
-      <div class="form-group">
-        <label for="cust-location" data-i18n="labelLocation">Onde entregamos? (Praia, Pousada ou Endereço) *</label>
-        <input type="text" id="cust-location" placeholder="Ex: Praia da Vila (guarda-sol azul) / Pousada..." />
-      </div>
-
-      <div class="form-group">
-        <label for="cust-payment" data-i18n="labelPayment">Forma de Pagamento</label>
-        <select id="cust-payment">
-          <option value="Pix" data-i18n="payPix">Pix (QR Code na hora)</option>
-          <option value="Cartão (Aproximação / NFC)" data-i18n="payCard">Cartão Débito/Crédito (Aproximação)</option>
-          <option value="Dinheiro" data-i18n="payCash">Dinheiro</option>
+        <label>Categoria</label>
+        <select id="new-cat">
+          <option value="donas">🍩 Rosquinhas Noruegas / Donas</option>
+          <option value="panes">🥖 Pães Artesanais Salgados</option>
+          <option value="tortas">🎂 Bolos e Tortas por Encomenda</option>
         </select>
       </div>
-
-      <div class="form-group">
-        <label for="cust-notes" data-i18n="labelNotes">Observações (opcional)</label>
-        <textarea id="cust-notes" rows="2" placeholder="Ex: Sabor do bolo, horário de entrega..."></textarea>
+      <div class="form-group"><label>Nome (Português)</label><input type="text" id="new-name-pt" /></div>
+      <div class="form-group"><label>Nombre (Español)</label><input type="text" id="new-name-es" /></div>
+      <div class="form-group"><label>Descrição</label><input type="text" id="new-desc" /></div>
+      <div class="grid-4">
+        <div class="form-group"><label>Preço 1 un. (R$) *</label><input type="number" step="0.50" id="new-p1" /></div>
+        <div class="form-group"><label>Pack 3 un. (opcional)</label><input type="number" step="0.50" id="new-p3" /></div>
+        <div class="form-group"><label>Pack 6 un. (opcional)</label><input type="number" step="0.50" id="new-p6" /></div>
+        <div class="form-group"><label>Pack 12 un. (opcional)</label><input type="number" step="0.50" id="new-p12" /></div>
       </div>
-    </section>
+      <button class="btn-sm btn-dark" onclick="addProduct()">Salvar Produto</button>
+    </div>
 
-  </main>
+    <h4 style="margin-bottom:8px;">📦 Editar Preços e Descontos Ativos</h4>
+    <div id="admin-product-list"></div>
 
-  <footer>
-    <p><strong>Flor de Baunilha</strong> • Confeitaria Artesanal</p>
-    <p>WhatsApp: (48) 9 9118-0841 • Imbituba - SC, Brasil</p>
-  </footer>
+    <div style="background:#FAF6F0; padding:10px; border-radius:10px; border:1px solid var(--border); margin-top:12px;">
+      <h4>🔑 Alterar Senha Admin</h4>
+      <input type="password" id="new-pin" placeholder="Nova senha (mín. 4 dígitos)" style="padding:6px; margin-top:6px; border-radius:6px; border:1px solid #ccc;" />
+      <button class="btn-sm btn-dark" onclick="changePin()">Atualizar Senha</button>
+    </div>
 
-  <!-- Floating Bottom Cart Bar -->
-  <div class="floating-bar">
-    <div class="floating-inner">
-      <div class="total-box">
-        <span id="items-count">0 itens selecionados</span>
-        <strong id="total-price">R$ 0,00</strong>
-      </div>
-      <button class="wa-btn" onclick="sendWhatsApp()">
-        <span>📲</span>
-        <span data-i18n="sendBtn">Pedir no WhatsApp</span>
-      </button>
+    <div style="background:#E8F8F5; padding:12px; border-radius:10px; border:1px solid #1ABC9C; margin-top:12px;">
+      <h4>💾 Salvar Alterações no GitHub Pages</h4>
+      <p style="font-size:0.8rem; margin-bottom:8px;">Depois de alterar preços ou produtos, baixe o arquivo atualizado ou copie o código para substituir no GitHub:</p>
+      <button class="btn-sm btn-dark" onclick="downloadUpdatedHTML()">⬇️ Baixar index.html</button>
+      <button class="btn-sm btn-gold" onclick="copyUpdatedHTML()">📋 Copiar Código</button>
     </div>
   </div>
+</div>
 
-  <script>
-    const PHONE_NUMBER = "5548991180841";
-    let currentLang = "pt";
+<script>
+  const SUPABASE_URL = "https://ebtlnhudnmyqspgbvyyw.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_awf4a-DVknXEJuQmvi53gg_u4Dcc0W6";
+  const WHATSAPP_NUMBER = "5548991180841";
+  let currentLang = "pt";
+  let adminPin = localStorage.getItem("fb_admin_pin") || "1234";
 
-    const products = [
-      {
-        id: "dona_unit",
-        category: "donuts",
-        price: 5.00,
-        promo: false,
-        pt: {
-          name: "Rosquinha Noruega Clássica (Unidade)",
-          desc: "Massa artesanal macia com toque de cardamomo e açúcar refinado fino."
-        },
-        es: {
-          name: "Dona Noruega Clásica (Unidad)",
-          desc: "Masa artesanal súper tierna con toque de cardamomo y azúcar refinado fino."
-        }
-      },
-      {
-        id: "dona_pack3",
-        category: "donuts",
-        price: 12.00,
-        promo: true,
-        pt: {
-          promoLabel: "🔥 Mais Pedido • Economia",
-          name: "Pack 3 Rosquinhas Noruegas",
-          desc: "Leve 3 unidades fresquinhas no saquinho kraft. Ideal para compartilhar!"
-        },
-        es: {
-          promoLabel: "🔥 Más Pedido • Promo",
-          name: "Pack 3 Donas Noruegas",
-          desc: "Llevá 3 unidades frescas en bolsa kraft. ¡Ideal para el mate o café!"
-        }
-      },
-      {
-        id: "pao_torresmo",
-        category: "breads",
-        price: 15.00,
-        promo: false,
-        pt: {
-          name: "Pão Artesanal com Torresmo",
-          desc: "Pão caseiro fofinho recheado com torresmo crocante, assado na fôrma."
-        },
-        es: {
-          name: "Pan Artesanal con Chicharrón (Torresmo)",
-          desc: "Pan casero esponjoso relleno con chicharrón crocante, horneado en molde."
-        }
-      },
-      {
-        id: "pao_calabresa",
-        category: "breads",
-        price: 15.00,
-        promo: false,
-        pt: {
-          name: "Pão Artesanal de Calabresa",
-          desc: "Recheado com linguiça calabresa selecionada e toque de orégano."
-        },
-        es: {
-          name: "Pan Artesanal de Calabresa",
-          desc: "Relleno con longaniza calabresa seleccionada y un toque de orégano."
-        }
-      },
-      {
-        id: "pao_tradicional",
-        category: "breads",
-        price: 15.00,
-        promo: false,
-        pt: {
-          name: "Pão Caseiro Tradicional",
-          desc: "Receita clássica de fermentação natural e casca dourada."
-        },
-        es: {
-          name: "Pan Casero Tradicional",
-          desc: "Receta clásica artesanal de miga tierna y corteza dorada."
-        }
-      },
-      {
-        id: "torta_encomenda",
-        category: "cakes",
-        price: 18.00,
-        promo: false,
-        pt: {
-          name: "Bolo / Tortinha Caseira (A partir de R$ 18)",
-          desc: "Sabores variados sob encomenda. Informe o sabor desejado nas observações!"
-        },
-        es: {
-          name: "Torta / Budín Casero por Encargue (Desde R$ 18)",
-          desc: "Sabores variados a pedido. ¡Indicá el sabor deseado en observaciones!"
-        }
+  const DEFAULT_PRODUCTS = [
+    { id: 1, cat: "donas", name_pt: "Rosquinha Noruega Clássica", name_es: "Dona Noruega Clásica", description: "Macia por dentro, sequinha e passada no açúcar • Tierna y azucarada", price_1: 3.00, price_3: 8.00, price_6: 15.00, price_12: 28.00 },
+    { id: 2, cat: "donas", name_pt: "Rosquinha Noruega com Chocolate", name_es: "Dona Noruega con Chocolate", description: "Cobertura de chocolate selecionado • Baño de chocolate", price_1: 4.00, price_3: 11.00, price_6: 21.00, price_12: 40.00 },
+    { id: 3, cat: "panes", name_pt: "Pão Artesanal com Torresmo", name_es: "Pan Artesanal con Chicharrón", description: "Assado em fôrma individual • Horneado en molde individual", price_1: 15.00, price_3: null, price_6: null, price_12: null },
+    { id: 4, cat: "panes", name_pt: "Pão Artesanal de Calabresa", name_es: "Pan Artesanal de Calabresa", description: "Recheado e perfumado com orégano • Relleno con orégano", price_1: 15.00, price_3: null, price_6: null, price_12: null },
+    { id: 5, cat: "panes", name_pt: "Pão Caseiro Tradicional", name_es: "Pan Casero Tradicional", description: "Massa macia artesanal • Masa tierna artesanal", price_1: 15.00, price_3: null, price_6: null, price_12: null },
+    { id: 6, cat: "tortas", name_pt: "Bolo Caseiro / Torta (Encomenda)", name_es: "Torta Casera (Por Encargo)", description: "Consulte sabores disponíveis no dia • Consultar sabores", price_1: 18.00, price_3: null, price_6: null, price_12: null }
+  ];
+
+  let products = [];
+  let cart = {};
+
+  function sbHeaders() {
+    return {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=representation"
+    };
+  }
+
+  function hasSupabase() {
+    return SUPABASE_URL.startsWith("http") && SUPABASE_KEY.length > 20;
+  }
+
+  function formatBRL(val) {
+    return "R$ " + Number(val).toFixed(2).replace(".", ",");
+  }
+
+  function calcItemTotal(item, qty) {
+    if (qty <= 0) return { total: 0, saved: 0 };
+    let rem = qty;
+    let total = 0;
+
+    if (item.price_12 && rem >= 12) {
+      const packs12 = Math.floor(rem / 12);
+      total += packs12 * Number(item.price_12);
+      rem %= 12;
+    }
+    if (item.price_6 && rem >= 6) {
+      const packs6 = Math.floor(rem / 6);
+      total += packs6 * Number(item.price_6);
+      rem %= 6;
+    }
+    if (item.price_3 && rem >= 3) {
+      const packs3 = Math.floor(rem / 3);
+      total += packs3 * Number(item.price_3);
+      rem %= 3;
+    }
+    total += rem * Number(item.price_1);
+    const fullPrice = qty * Number(item.price_1);
+    return { total, saved: Math.max(0, fullPrice - total) };
+  }
+
+  async function loadProducts() {
+    if (hasSupabase()) {
+      try {
+        const res = await fetch(SUPABASE_URL + "/rest/v1/productos?activo=eq.true&order=id.asc", { headers: sbHeaders() });
+        const data = await res.json();
+        products = (Array.isArray(data) && data.length > 0) ? data : DEFAULT_PRODUCTS;
+      } catch (e) {
+        products = DEFAULT_PRODUCTS;
       }
+    } else {
+      products = JSON.parse(localStorage.getItem("fb_products_v2")) || DEFAULT_PRODUCTS;
+    }
+    renderCatalog();
+    updateCartBar();
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.getElementById("btn-pt").classList.toggle("active", lang === "pt");
+    document.getElementById("btn-es").classList.toggle("active", lang === "es");
+    document.querySelectorAll("[data-pt]").forEach(el => {
+      el.textContent = el.getAttribute("data-" + lang);
+    });
+    renderCatalog();
+    updateCartBar();
+  }
+
+  function renderCatalog() {
+    const container = document.getElementById("catalog-container");
+    const categories = [
+      { key: "donas", title_pt: "🍩 Rosquinhas Noruegas / Donas", title_es: "🍩 Donas Noruegas Artesanales" },
+      { key: "panes", title_pt: "🥖 Pães Artesanais Salgados", title_es: "🥖 Panes Artesanales Salados" },
+      { key: "tortas", title_pt: "🎂 Bolos e Tortas por Encomenda", title_es: "🎂 Tortas por Encargo" }
     ];
 
-    const cart = {};
-    products.forEach(p => cart[p.id] = 0);
+    container.innerHTML = "";
+    categories.forEach(cat => {
+      const items = products.filter(p => p.cat === cat.key);
+      if (items.length === 0) return;
 
-    const i18n = {
-      pt: {
-        subtitle: "Confeitaria Artesanal",
-        love: "~ Feito com amor ~",
-        deliveryPill: "🏖️ Entrega na Praia, Pousadas e Encomendas",
-        storyTitle: "A Verdadeira Receita Noruega em Imbituba",
-        storyP1: "Trouxemos a autêntica tradição escandinava dos <strong>Smultringer</strong>: rosquinhas artesanais extremamente macias por dentro, levemente douradas por fora e perfumadas com um toque especial de cardamomo. Diferente das donas comuns, nossa massa leva creme fresco e não absorve óleo, ficando sequinha e perfeita para acompanhar seu café ou chimarrão na areia.",
-        storyP2: "Também preparamos <strong>pães salgados artesanais</strong> assados em fôrma individual e <strong>bolos caseiros</strong> feitos sob encomenda.",
-        badge1: "🇳🇴 Receita Noruega Original",
-        badge2: "✨ Sequinhas e Macias",
-        badge3: "💳 Aceitamos Pix e Cartão",
-        catDonuts: "🍩 Rosquinhas Noruegas (Doce)",
-        catBreads: "🥖 Pães Artesanais Salgados",
-        catCakes: "🎂 Bolos e Tortas por Encomenda",
-        orderFormTitle: "📋 Finalizar Pedido pelo WhatsApp",
-        labelName: "Seu Nome *",
-        labelLocation: "Onde entregamos? (Praia, Pousada ou Endereço) *",
-        labelPayment: "Forma de Pagamento",
-        payPix: "Pix (QR Code na hora)",
-        payCard: "Cartão Débito/Crédito (Aproximação)",
-        payCash: "Dinheiro",
-        labelNotes: "Observações (opcional)",
-        sendBtn: "Pedir no WhatsApp",
-        itemsSelected: (n) => n === 1 ? "1 item selecionado" : `${n} itens selecionados`,
-        alertEmpty: "Por favor, adicione pelo menos 1 produto ao seu pedido!",
-        alertFields: "Por favor, preencha seu nome e onde devemos entregar."
-      },
-      es: {
-        subtitle: "Pastelería Artesanal",
-        love: "~ Hecho con amor ~",
-        deliveryPill: "🏖️ Entregas en la Playa, Posadas y Encargues",
-        storyTitle: "La Auténtica Receta Noruega en Imbituba",
-        storyP1: "Trajimos la verdadera tradición escandinava de los <strong>Smultringer</strong>: donas artesanales súper tiernas por dentro, doradas por fuera y perfumadas con un toque especial de cardamomo. A diferencia de las donas comunes, nuestra masa lleva crema fresca y no absorbe aceite, quedando sequita e ideal para acompañar el mate o el café en la arena.",
-        storyP2: "También elaboramos <strong>panes salados artesanales</strong> horneados en molde individual y <strong>tortas caseras</strong> por encargo.",
-        badge1: "🇳🇴 Receta Noruega Original",
-        badge2: "✨ Tiernas y No Grasosas",
-        badge3: "💳 Aceptamos Pix y Tarjeta",
-        catDonuts: "🍩 Donas Noruegas (Dulce)",
-        catBreads: "🥖 Panes Artesanales Salados",
-        catCakes: "🎂 Tortas por Encargue",
-        orderFormTitle: "📋 Enviar Pedido por WhatsApp",
-        labelName: "Tu Nombre *",
-        labelLocation: "¿Dónde entregamos? (Playa, Posada o Dirección) *",
-        labelPayment: "Forma de Pago",
-        payPix: "Pix (QR al instante)",
-        payCard: "Tarjeta Débito/Crédito (Sin contacto)",
-        payCash: "Efectivo (Reales)",
-        labelNotes: "Observaciones (opcional)",
-        sendBtn: "Pedir por WhatsApp",
-        itemsSelected: (n) => n === 1 ? "1 producto seleccionado" : `${n} productos seleccionados`,
-        alertEmpty: "¡Por favor, agregá al menos 1 producto a tu pedido!",
-        alertFields: "Por favor, completá tu nombre y el lugar de entrega."
-      }
-    };
+      const h2 = document.createElement("h2");
+      h2.className = "cat-title";
+      h2.textContent = currentLang === "pt" ? cat.title_pt : cat.title_es;
+      container.appendChild(h2);
 
-    function formatBRL(val) {
-      return "R$ " + val.toFixed(2).replace(".", ",");
-    }
+      items.forEach(item => {
+        const qty = cart[item.id] || 0;
+        const calc = calcItemTotal(item, qty);
+        let pills = "";
+        if (item.price_3) pills += '<span class="promo-pill">3x ' + formatBRL(item.price_3) + '</span>';
+        if (item.price_6) pills += '<span class="promo-pill">6x ' + formatBRL(item.price_6) + '</span>';
+        if (item.price_12) pills += '<span class="promo-pill">12x ' + formatBRL(item.price_12) + '</span>';
 
-    function renderCatalog() {
-      const lists = {
-        donuts: document.getElementById("donuts-list"),
-        breads: document.getElementById("breads-list"),
-        cakes: document.getElementById("cakes-list")
-      };
+        const subHtml = qty > 0
+          ? '<div class="subtotal-line">Subtotal: ' + formatBRL(calc.total) + (calc.saved > 0 ? ' (' + (currentLang === "pt" ? 'Desconto: -' : 'Ahorro: -') + formatBRL(calc.saved) + ')' : '') + '</div>'
+          : "";
 
-      Object.values(lists).forEach(el => el.innerHTML = "");
-
-      products.forEach(p => {
-        const text = p[currentLang];
         const card = document.createElement("div");
-        card.className = "product-card" + (p.promo ? " promo" : "");
-        card.innerHTML = `
-          <div class="product-info">
-            ${p.promo ? `<span class="promo-tag">${text.promoLabel}</span>` : ""}
-            <h3>${text.name}</h3>
-            <p>${text.desc}</p>
-            <div class="price">${formatBRL(p.price)}</div>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn" type="button" onclick="updateQty('${p.id}', -1)" aria-label="Diminuir">−</button>
-            <span class="qty-val" id="qty-${p.id}">${cart[p.id]}</span>
-            <button class="qty-btn" type="button" onclick="updateQty('${p.id}', 1)" aria-label="Aumentar">+</button>
-          </div>
-        `;
-        lists[p.category].appendChild(card);
+        card.className = "product-card";
+        card.innerHTML =
+          '<div class="product-info">' +
+            '<h3>' + (currentLang === "pt" ? item.name_pt : item.name_es) + '</h3>' +
+            '<p>' + (item.description || "") + '</p>' +
+            '<span class="price-tag">' + formatBRL(item.price_1) + ' <small style="font-weight:400;">/ un.</small></span>' +
+            (pills ? '<div class="promo-pills">' + pills + '</div>' : '') +
+            subHtml +
+          '</div>' +
+          '<div class="qty-control">' +
+            '<button class="qty-btn" onclick="changeQty(' + item.id + ', -1)">−</button>' +
+            '<span class="qty-val">' + qty + '</span>' +
+            '<button class="qty-btn" onclick="changeQty(' + item.id + ', 1)">+</button>' +
+          '</div>';
+        container.appendChild(card);
       });
+    });
+  }
 
-      updateSummary();
-    }
-
-    function updateQty(id, delta) {
-      cart[id] = Math.max(0, (cart[id] || 0) + delta);
-      document.getElementById(`qty-${id}`).textContent = cart[id];
-      updateSummary();
-    }
-
-    function updateSummary() {
-      let totalItems = 0;
-      let totalPrice = 0;
-      products.forEach(p => {
-        const q = cart[p.id] || 0;
-        totalItems += q;
-        totalPrice += q * p.price;
-      });
-      document.getElementById("items-count").textContent = i18n[currentLang].itemsSelected(totalItems);
-      document.getElementById("total-price").textContent = formatBRL(totalPrice);
-    }
-
-    function setLang(lang) {
-      currentLang = lang;
-      document.getElementById("btn-pt").classList.toggle("active", lang === "pt");
-      document.getElementById("btn-es").classList.toggle("active", lang === "es");
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (typeof i18n[lang][key] === "string") {
-          el.innerHTML = i18n[lang][key];
-        }
-      });
-
-      renderCatalog();
-    }
-
-    function sendWhatsApp() {
-      const selected = products.filter(p => cart[p.id] > 0);
-      if (selected.length === 0) {
-        alert(i18n[currentLang].alertEmpty);
-        return;
-      }
-
-      const name = document.getElementById("cust-name").value.trim();
-      const location = document.getElementById("cust-location").value.trim();
-      const payment = document.getElementById("cust-payment").value;
-      const notes = document.getElementById("cust-notes").value.trim();
-
-      if (!name || !location) {
-        alert(i18n[currentLang].alertFields);
-        document.getElementById("checkout-section").scrollIntoView({ behavior: "smooth" });
-        return;
-      }
-
-      let total = 0;
-      let lines = [];
-
-      if (currentLang === "pt") {
-        lines.push("🌸 *NOVO PEDIDO — FLOR DE BAUNILHA* 🌸");
-        lines.push("");
-        lines.push(`👤 *Cliente:* ${name}`);
-        lines.push(`📍 *Entrega:* ${location}`);
-        lines.push(`💳 *Pagamento:* ${payment}`);
-        lines.push("");
-        lines.push("🛒 *Itens do Pedido:*");
-        selected.forEach(p => {
-          const sub = cart[p.id] * p.price;
-          total += sub;
-          lines.push(`• ${cart[p.id]}x ${p.pt.name} — ${formatBRL(sub)}`);
-        });
-        lines.push("");
-        lines.push(`💰 *TOTAL: ${formatBRL(total)}*`);
-        if (notes) {
-          lines.push(`📝 *Obs:* ${notes}`);
-        }
-      } else {
-        lines.push("🌸 *NUEVO PEDIDO — FLOR DE BAUNILHA* 🌸");
-        lines.push("");
-        lines.push(`👤 *Cliente:* ${name}`);
-        lines.push(`📍 *Entrega:* ${location}`);
-        lines.push(`💳 *Pago:* ${payment}`);
-        lines.push("");
-        lines.push("🛒 *Detalle del Pedido:*");
-        selected.forEach(p => {
-          const sub = cart[p.id] * p.price;
-          total += sub;
-          lines.push(`• ${cart[p.id]}x ${p.es.name} — ${formatBRL(sub)}`);
-        });
-        lines.push("");
-        lines.push(`💰 *TOTAL: ${formatBRL(total)}*`);
-        if (notes) {
-          lines.push(`📝 *Obs:* ${notes}`);
-        }
-      }
-
-      const message = encodeURIComponent(lines.join("\n"));
-      window.open(`https://wa.me/${PHONE_NUMBER}?text=${message}`, "_blank");
-    }
-
+  function changeQty(id, delta) {
+    cart[id] = Math.max(0, (cart[id] || 0) + delta);
     renderCatalog();
-  </script>
+    updateCartBar();
+  }
+
+  function updateCartBar() {
+    let totalItems = 0, totalPrice = 0;
+    products.forEach(p => {
+      const q = cart[p.id] || 0;
+      totalItems += q;
+      totalPrice += calcItemTotal(p, q).total;
+    });
+    document.getElementById("cart-count").textContent = totalItems + (currentLang === "pt" ? " itens selecionados" : " ítems seleccionados");
+    document.getElementById("cart-total").textContent = formatBRL(totalPrice);
+  }
+
+  function sendWhatsAppOrder() {
+    const selected = products.filter(p => (cart[p.id] || 0) > 0);
+    if (selected.length === 0) {
+      alert(currentLang === "pt" ? "Selecione pelo menos 1 produto." : "Seleccioná al menos 1 producto.");
+      return;
+    }
+    const name = document.getElementById("cust-name").value.trim();
+    const phone = document.getElementById("cust-phone").value.trim();
+    const location = document.getElementById("cust-location").value.trim();
+    const payment = document.getElementById("cust-payment").value;
+    const notes = document.getElementById("cust-notes").value.trim();
+
+    if (!name || !phone || !location) {
+      alert(currentLang === "pt" ? "Preencha seu Nome, Telefone e Local de entrega." : "Completá tu Nombre, Teléfono y Lugar de entrega.");
+      document.getElementById("checkout-section").scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    let total = 0;
+    let lines = [
+      "🌸 *NOVO PEDIDO — FLOR DE BAUNILHA* 🌸",
+      "",
+      "👤 *Cliente:* " + name,
+      "📱 *Telefone:* " + phone,
+      "📍 *Entrega:* " + location,
+      "💳 *Pagamento:* " + payment
+    ];
+    if (notes) lines.push("📝 *Obs:* " + notes);
+    lines.push("", "🛒 *Itens do Pedido:*");
+
+    selected.forEach(p => {
+      const q = cart[p.id];
+      const calc = calcItemTotal(p, q);
+      total += calc.total;
+      const itemName = currentLang === "pt" ? p.name_pt : p.name_es;
+      const promoNote = calc.saved > 0 ? " _(desconto -" + formatBRL(calc.saved) + ")_" : "";
+      lines.push("• " + q + "x " + itemName + " — " + formatBRL(calc.total) + promoNote);
+    });
+
+    lines.push("", "💰 *TOTAL A PAGAR: " + formatBRL(total) + "*");
+    window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("\n")), "_blank");
+  }
+
+  function openAdmin() {
+    const entered = prompt("Senha Admin:");
+    if (entered === adminPin) {
+      renderAdminList();
+      document.getElementById("admin-modal").style.display = "block";
+    } else if (entered !== null) {
+      alert("Senha incorreta.");
+    }
+  }
+  function closeAdmin() { document.getElementById("admin-modal").style.display = "none"; }
+
+  function renderAdminList() {
+    const list = document.getElementById("admin-product-list");
+    list.innerHTML = "";
+    products.forEach((p, idx) => {
+      const div = document.createElement("div");
+      div.className = "admin-item";
+      div.innerHTML =
+        '<strong>' + p.name_pt + '</strong>' +
+        '<div class="grid-4" style="margin-top:6px;">' +
+          '<div><small>1 un.</small><input type="number" step="0.50" id="ep1-' + idx + '" value="' + p.price_1 + '" style="width:100%; padding:4px;" /></div>' +
+          '<div><small>3 un.</small><input type="number" step="0.50" id="ep3-' + idx + '" value="' + (p.price_3 || "") + '" style="width:100%; padding:4px;" /></div>' +
+          '<div><small>6 un.</small><input type="number" step="0.50" id="ep6-' + idx + '" value="' + (p.price_6 || "") + '" style="width:100%; padding:4px;" /></div>' +
+          '<div><small>12 un.</small><input type="number" step="0.50" id="ep12-' + idx + '" value="' + (p.price_12 || "") + '" style="width:100%; padding:4px;" /></div>' +
+        '</div>' +
+        '<button class="btn-sm btn-dark" onclick="updateProduct(' + idx + ')">Salvar Alterações</button> ' +
+        '<button class="btn-sm btn-red" onclick="deleteProduct(' + idx + ')">Remover</button>';
+      list.appendChild(div);
+    });
+  }
+
+  async function updateProduct(idx) {
+    const p = products[idx];
+    const updated = {
+      price_1: parseFloat(document.getElementById("ep1-" + idx).value) || p.price_1,
+      price_3: parseFloat(document.getElementById("ep3-" + idx).value) || null,
+      price_6: parseFloat(document.getElementById("ep6-" + idx).value) || null,
+      price_12: parseFloat(document.getElementById("ep12-" + idx).value) || null
+    };
+    Object.assign(products[idx], updated);
+    if (hasSupabase()) {
+      await fetch(SUPABASE_URL + "/rest/v1/productos?id=eq." + p.id, {
+        method: "PATCH", headers: sbHeaders(), body: JSON.stringify(updated)
+      });
+    } else {
+      localStorage.setItem("fb_products_v2", JSON.stringify(products));
+    }
+    renderCatalog(); updateCartBar();
+    alert("Atualizado!");
+  }
+
+  async function addProduct() {
+    const newItem = {
+      cat: document.getElementById("new-cat").value,
+      name_pt: document.getElementById("new-name-pt").value.trim(),
+      name_es: document.getElementById("new-name-es").value.trim() || document.getElementById("new-name-pt").value.trim(),
+      description: document.getElementById("new-desc").value.trim(),
+      price_1: parseFloat(document.getElementById("new-p1").value),
+      price_3: parseFloat(document.getElementById("new-p3").value) || null,
+      price_6: parseFloat(document.getElementById("new-p6").value) || null,
+      price_12: parseFloat(document.getElementById("new-p12").value) || null
+    };
+    if (!newItem.name_pt || isNaN(newItem.price_1)) { alert("Preencha nome e preço unitário."); return; }
+
+    if (hasSupabase()) {
+      const res = await fetch(SUPABASE_URL + "/rest/v1/productos", {
+        method: "POST", headers: sbHeaders(), body: JSON.stringify(newItem)
+      });
+      const data = await res.json();
+      if (Array.isArray(data) && data[0]) products.push(data[0]);
+    } else {
+      newItem.id = Date.now();
+      products.push(newItem);
+      localStorage.setItem("fb_products_v2", JSON.stringify(products));
+    }
+    renderAdminList(); renderCatalog();
+    alert("Produto adicionado!");
+  }
+
+  async function deleteProduct(idx) {
+    if (!confirm("Remover produto?")) return;
+    const p = products[idx];
+    if (hasSupabase()) {
+      await fetch(SUPABASE_URL + "/rest/v1/productos?id=eq." + p.id, { method: "DELETE", headers: sbHeaders() });
+    }
+    products.splice(idx, 1);
+    if (!hasSupabase()) localStorage.setItem("fb_products_v2", JSON.stringify(products));
+    renderAdminList(); renderCatalog(); updateCartBar();
+  }
+
+  function changePin() {
+    const np = document.getElementById("new-pin").value.trim();
+    if (np.length < 4) { alert("Mínimo 4 dígitos."); return; }
+    adminPin = np;
+    localStorage.setItem("fb_admin_pin", adminPin);
+    document.getElementById("new-pin").value = "";
+    alert("Senha alterada!");
+  }
+
+  function buildUpdatedHTMLString() {
+    let fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    fullHtml = fullHtml.replace(
+      /const DEFAULT_PRODUCTS = \[[\s\S]*?\];/,
+      "const DEFAULT_PRODUCTS = " + JSON.stringify(products, null, 2) + ";"
+    );
+    return fullHtml;
+  }
+
+  function downloadUpdatedHTML() {
+    const blob = new Blob([buildUpdatedHTMLString()], { type: "text/html;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "index.html";
+    a.click();
+  }
+
+  function copyUpdatedHTML() {
+    navigator.clipboard.writeText(buildUpdatedHTMLString()).then(() => {
+      alert("Código atualizado copiado!");
+    });
+  }
+
+  loadProducts();
+</script>
 </body>
 </html>
