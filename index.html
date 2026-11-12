@@ -353,7 +353,13 @@
       </div>
       <div class="form-group"><label>Nome (Português)</label><input type="text" id="new-name-pt" /></div>
       <div class="form-group"><label>Nombre (Español)</label><input type="text" id="new-name-es" /></div>
-      <div class="form-group"><label>Descrição</label><input type="text" id="new-desc" /></div>
+      <div class="form-group"><label>Descrição (Português)</label><input type="text" id="new-desc" placeholder="Ex: Recheado e perfumado com orégano" /></div>
+      <div class="form-group"><label>Descripción (Español, opcional)</label><input type="text" id="new-desc-es" placeholder="Ej: Relleno con orégano" /></div>
+      <div class="form-group">
+        <label>📷 Foto do produto (opcional)</label>
+        <input type="file" id="new-photo" accept="image/*" onchange="previewNewPhoto(event)" style="font-size:0.85rem;" />
+        <img id="new-photo-preview" alt="" style="display:none; width:72px; height:72px; object-fit:cover; border-radius:8px; border:1px solid var(--border); margin-top:6px;" />
+      </div>
       <div class="grid-4">
         <div class="form-group"><label>Preço 1 un. (R$) *</label><input type="number" step="0.50" id="new-p1" /></div>
         <div class="form-group"><label>Pack 3 un. (opcional)</label><input type="number" step="0.50" id="new-p3" /></div>
@@ -579,7 +585,7 @@
             photoHtml +
             '<div class="product-info">' +
               '<h3>' + itemName + '</h3>' +
-              '<p>' + (item.description || "") + '</p>' +
+              '<p>' + descFor(item) + '</p>' +
             '</div>' +
             '<button type="button" class="info-btn" onclick="askCakeInfo(' + item.id + ')">' +
               (currentLang === "pt" ? "💬 Pedir informações" : "💬 Pedir información") +
@@ -592,7 +598,7 @@
           photoHtml +
           '<div class="product-info">' +
             '<h3>' + itemName + '</h3>' +
-            '<p>' + (item.description || "") + '</p>' +
+            '<p>' + descFor(item) + '</p>' +
             '<span class="price-tag">' + formatBRL(item.price_1) + ' <small style="font-weight:400;">/ un.</small></span>' +
             (pills ? '<div class="promo-pills">' + pills + '</div>' : '') +
             subHtml +
@@ -619,6 +625,52 @@
     }
     lb.querySelector("img").src = productPhotos[id] || "";
     lb.style.display = "flex";
+  }
+
+  // Descrição guardada em uma só coluna: "português • español"
+  function splitDesc(d) {
+    d = String(d || "");
+    const i = d.indexOf(" • ");
+    return i === -1 ? { pt: d.trim(), es: "" } : { pt: d.slice(0, i).trim(), es: d.slice(i + 3).trim() };
+  }
+  function descFor(item) {
+    const d = splitDesc(item.description);
+    return currentLang === "es" ? (d.es || d.pt) : d.pt;
+  }
+
+  let pendingNewPhoto = "";
+
+  function resizeImageFile(file) {
+    return new Promise(function(resolve, reject) {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = function() {
+          const max = 600;
+          const ratio = Math.min(1, max / Math.max(img.width, img.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * ratio);
+          canvas.height = Math.round(img.height * ratio);
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", 0.78));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function previewNewPhoto(event) {
+    const file = event.target.files && event.target.files[0];
+    const prev = document.getElementById("new-photo-preview");
+    if (!file) { pendingNewPhoto = ""; prev.style.display = "none"; return; }
+    try {
+      pendingNewPhoto = await resizeImageFile(file);
+      prev.src = pendingNewPhoto;
+      prev.style.display = "block";
+    } catch (err) { alert("Não foi possível ler a imagem."); }
   }
 
   function pickProductPhoto(idx, event) {
@@ -749,6 +801,10 @@
       div.className = "admin-item";
       div.innerHTML =
         '<strong>' + p.name_pt + '</strong>' +
+        '<div style="margin-top:6px;"><small>Descrição (Português)</small>' +
+          '<input type="text" id="edescpt-' + idx + '" style="width:100%; padding:4px;" /></div>' +
+        '<div style="margin-top:6px;"><small>Descripción (Español)</small>' +
+          '<input type="text" id="edeses-' + idx + '" style="width:100%; padding:4px;" /></div>' +
         '<div class="grid-4" style="margin-top:6px;">' +
           '<div><small>1 un.</small><input type="number" step="0.50" id="ep1-' + idx + '" value="' + p.price_1 + '" style="width:100%; padding:4px;" /></div>' +
           '<div><small>3 un.</small><input type="number" step="0.50" id="ep3-' + idx + '" value="' + (p.price_3 || "") + '" style="width:100%; padding:4px;" /></div>' +
@@ -763,12 +819,20 @@
         '<button type="button" class="btn-sm btn-dark" style="margin-top:8px;" onclick="updateProduct(' + idx + ')">Salvar Alterações</button> ' +
         '<button type="button" class="btn-sm btn-red" onclick="deleteProduct(' + idx + ')">Remover</button>';
       list.appendChild(div);
+      const dd = splitDesc(p.description);
+      div.querySelector("#edescpt-" + idx).value = dd.pt;
+      div.querySelector("#edeses-" + idx).value = dd.es;
     });
   }
 
   async function updateProduct(idx) {
     const p = products[idx];
     const updated = {
+      description: (function() {
+        const pt = document.getElementById("edescpt-" + idx).value.trim();
+        const es = document.getElementById("edeses-" + idx).value.trim();
+        return es ? (pt ? pt + " • " + es : es) : pt;
+      })(),
       price_1: parseFloat(document.getElementById("ep1-" + idx).value) || p.price_1,
       price_3: parseFloat(document.getElementById("ep3-" + idx).value) || null,
       price_6: parseFloat(document.getElementById("ep6-" + idx).value) || null,
@@ -790,7 +854,11 @@
       cat: document.getElementById("new-cat").value,
       name_pt: document.getElementById("new-name-pt").value.trim(),
       name_es: document.getElementById("new-name-es").value.trim() || document.getElementById("new-name-pt").value.trim(),
-      description: document.getElementById("new-desc").value.trim(),
+      description: (function() {
+        const pt = document.getElementById("new-desc").value.trim();
+        const es = document.getElementById("new-desc-es").value.trim();
+        return es ? (pt ? pt + " • " + es : es) : pt;
+      })(),
       price_1: parseFloat(document.getElementById("new-p1").value),
       price_3: parseFloat(document.getElementById("new-p3").value) || null,
       price_6: parseFloat(document.getElementById("new-p6").value) || null,
@@ -801,12 +869,27 @@
     if (db) {
       const res = await db.from("productos").insert([newItem]).select();
       if (res.error) { alert("Erro: " + res.error.message); return; }
-      if (res.data && res.data[0]) products.push(res.data[0]);
+      if (res.data && res.data[0]) {
+        products.push(res.data[0]);
+        if (pendingNewPhoto) {
+          const rf = await db.from("config").upsert({ clave: "foto_" + res.data[0].id, valor: pendingNewPhoto });
+          if (rf.error) alert("Produto salvo, mas erro ao salvar a foto: " + rf.error.message);
+          else productPhotos[res.data[0].id] = pendingNewPhoto;
+        }
+      }
     } else {
       newItem.id = Date.now();
       products.push(newItem);
       localStorage.setItem("fb_products_v2", JSON.stringify(products));
+      if (pendingNewPhoto) {
+        try { localStorage.setItem("fb_photo_" + newItem.id, pendingNewPhoto); productPhotos[newItem.id] = pendingNewPhoto; } catch (err) {}
+      }
     }
+    ["new-name-pt","new-name-es","new-desc","new-desc-es","new-p1","new-p3","new-p6","new-p12","new-photo"].forEach(function(id) {
+      const el = document.getElementById(id); if (el) el.value = "";
+    });
+    pendingNewPhoto = "";
+    document.getElementById("new-photo-preview").style.display = "none";
     renderAdminList(); renderCatalog();
     alert("Produto adicionado!");
   }
