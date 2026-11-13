@@ -135,6 +135,11 @@
     .sch-admin-row { border: 1px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); }
     .sch-admin-row label.sch-check { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.92rem; }
     .sch-admin-row input[type="text"] { width: 100%; padding: 5px; margin-top: 4px; }
+    .order-notice {
+      margin-top: 16px; padding: 12px 14px; text-align: center;
+      background: #FFF3CD; border: 2px solid #E0A800; border-radius: 12px;
+      color: #7A4B00; font-weight: 800; font-size: 1.02rem; letter-spacing: 0.2px;
+    }
     .floating-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: var(--brown); color: #FFF;
       padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
@@ -288,6 +293,8 @@
     <p class="sch-sub" data-pt="Confira onde e quando estaremos. Escolha o dia no formulário abaixo." data-es="Mirá dónde y cuándo vamos a estar. Elegí el día en el formulario de abajo.">Confira onde e quando estaremos. Escolha o dia no formulário abaixo.</p>
     <div id="schedule-list"></div>
   </div>
+
+  <div class="order-notice" id="order-notice" data-pt="⏰ ATENÇÃO: pedidos somente até às 12h!" data-es="⏰ ¡ATENCIÓN: pedidos solo hasta las 12 hs!">⏰ ATENÇÃO: pedidos somente até às 12h!</div>
 
   <div class="checkout-box" id="checkout-section">
     <h2 data-pt="📋 Seus Dados para o Pedido" data-es="📋 Tus Datos para el Pedido">📋 Seus Dados para o Pedido</h2>
