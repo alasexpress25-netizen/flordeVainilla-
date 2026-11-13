@@ -117,6 +117,24 @@
       width: 100%; padding: 9px; border: 1.5px solid var(--border);
       border-radius: 8px; font-size: 0.95rem; background: var(--bg); color: var(--brown);
     }
+    .schedule-box {
+      background: var(--card); border: 2px solid var(--gold);
+      border-radius: 14px; padding: 16px; margin-top: 24px;
+    }
+    .schedule-box h2 { font-family: Georgia, serif; font-size: 1.2rem; margin-bottom: 4px; }
+    .schedule-box .sch-sub { font-size: 0.84rem; color: var(--brown-light); margin-bottom: 10px; }
+    .sch-day { padding: 9px 0; border-top: 1px dashed var(--border); }
+    .sch-day:first-of-type { border-top: none; }
+    .sch-day-name { font-weight: 700; }
+    .sch-day-time { font-size: 0.85rem; color: var(--brown-light); margin-left: 6px; }
+    .sch-places { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .sch-chip {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+      padding: 3px 10px; font-size: 0.82rem;
+    }
+    .sch-admin-row { border: 1px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); }
+    .sch-admin-row label.sch-check { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.92rem; }
+    .sch-admin-row input[type="text"] { width: 100%; padding: 5px; margin-top: 4px; }
     .floating-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: var(--brown); color: #FFF;
       padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
@@ -265,6 +283,12 @@
 
   <div id="catalog-container">Carregando cardápio...</div>
 
+  <div class="schedule-box" id="schedule-box" style="display:none;">
+    <h2 data-pt="📅 Dias, Horários e Locais" data-es="📅 Días, Horarios y Lugares">📅 Dias, Horários e Locais</h2>
+    <p class="sch-sub" data-pt="Confira onde e quando estaremos. Escolha o dia no formulário abaixo." data-es="Mirá dónde y cuándo vamos a estar. Elegí el día en el formulario de abajo.">Confira onde e quando estaremos. Escolha o dia no formulário abaixo.</p>
+    <div id="schedule-list"></div>
+  </div>
+
   <div class="checkout-box" id="checkout-section">
     <h2 data-pt="📋 Seus Dados para o Pedido" data-es="📋 Tus Datos para el Pedido">📋 Seus Dados para o Pedido</h2>
     <div class="form-group">
@@ -274,6 +298,10 @@
     <div class="form-group">
       <label data-pt="Seu WhatsApp / Telefone *" data-es="Tu WhatsApp / Teléfono *">Seu WhatsApp / Telefone *</label>
       <input type="tel" id="cust-phone" placeholder="Ex: (48) 9 9999-9999" />
+    </div>
+    <div class="form-group" id="day-group" style="display:none;">
+      <label data-pt="Dia da entrega *" data-es="Día de entrega *">Dia da entrega *</label>
+      <select id="cust-day"></select>
     </div>
     <div class="form-group">
       <label data-pt="Onde entregamos? (Praia, Pousada ou Endereço) *" data-es="¿Dónde entregamos? (Playa, Posada o Dirección) *">Onde entregamos? (Praia, Pousada ou Endereço) *</label>
@@ -342,6 +370,13 @@
     </div>
 
     <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
+      <h4 style="margin-bottom:4px;">📅 Dias, Horários e Locais</h4>
+      <p style="font-size:0.8rem; color:var(--brown-light); margin-bottom:8px;">Marque os dias em que vocês atendem. Nos locais, separe com vírgula (ex: Rua Arroio, Praia Ibiraquera, Praia Ribanceira).</p>
+      <div id="admin-schedule"></div>
+      <button type="button" class="btn-sm btn-dark" onclick="saveSchedule()">💾 Salvar Horários e Locais</button>
+    </div>
+
+    <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
       <h4 style="margin-bottom:8px;">➕ Novo Produto com Descontos por Quantidade</h4>
       <div class="form-group">
         <label>Categoria</label>
@@ -392,6 +427,109 @@
   let currentLogoBase64 = "";
   let pendingLogoBase64 = "";
   let productPhotos = {}; // { idProducto: dataURL }
+
+  const DAYS = [
+    { k: "seg", pt: "Segunda-feira", es: "Lunes" },
+    { k: "ter", pt: "Terça-feira", es: "Martes" },
+    { k: "qua", pt: "Quarta-feira", es: "Miércoles" },
+    { k: "qui", pt: "Quinta-feira", es: "Jueves" },
+    { k: "sex", pt: "Sexta-feira", es: "Viernes" },
+    { k: "sab", pt: "Sábado", es: "Sábado" },
+    { k: "dom", pt: "Domingo", es: "Domingo" }
+  ];
+  let schedule = {}; // { seg: { active: true, time: "08:00 às 12:00", places: "Rua X, Praia Y" }, ... }
+
+  function parsePlaces(txt) {
+    return String(txt || "").split(/[,;\n]+/).map(function(x) { return x.trim(); }).filter(Boolean);
+  }
+  function activeDays() {
+    return DAYS.filter(function(d) { return schedule[d.k] && schedule[d.k].active; });
+  }
+  function renderSchedule() {
+    const box = document.getElementById("schedule-box");
+    const list = document.getElementById("schedule-list");
+    const sel = document.getElementById("cust-day");
+    const grp = document.getElementById("day-group");
+    const days = activeDays();
+    const prev = sel.value;
+    list.innerHTML = "";
+    sel.innerHTML = "";
+    if (days.length === 0) { box.style.display = "none"; grp.style.display = "none"; return; }
+    box.style.display = "block"; grp.style.display = "block";
+
+    const ph = document.createElement("option");
+    ph.value = ""; ph.textContent = currentLang === "pt" ? "Selecione o dia..." : "Seleccioná el día...";
+    sel.appendChild(ph);
+
+    days.forEach(function(d) {
+      const cfg = schedule[d.k];
+      const label = currentLang === "pt" ? d.pt : d.es;
+      const places = parsePlaces(cfg.places);
+
+      const row = document.createElement("div"); row.className = "sch-day";
+      const nm = document.createElement("span"); nm.className = "sch-day-name"; nm.textContent = label;
+      row.appendChild(nm);
+      if (cfg.time) {
+        const tm = document.createElement("span"); tm.className = "sch-day-time"; tm.textContent = "🕒 " + cfg.time;
+        row.appendChild(tm);
+      }
+      if (places.length) {
+        const pl = document.createElement("div"); pl.className = "sch-places";
+        places.forEach(function(x) {
+          const c = document.createElement("span"); c.className = "sch-chip"; c.textContent = "📍 " + x;
+          pl.appendChild(c);
+        });
+        row.appendChild(pl);
+      }
+      list.appendChild(row);
+
+      const opt = document.createElement("option");
+      opt.value = d.k;
+      opt.textContent = label + (cfg.time ? " — " + cfg.time : "");
+      sel.appendChild(opt);
+    });
+    if (prev && days.some(function(d) { return d.k === prev; })) sel.value = prev;
+  }
+  function renderScheduleAdmin() {
+    const wrap = document.getElementById("admin-schedule");
+    wrap.innerHTML = "";
+    DAYS.forEach(function(d, i) {
+      const cfg = schedule[d.k] || {};
+      const row = document.createElement("div"); row.className = "sch-admin-row";
+      row.innerHTML =
+        '<label class="sch-check"><input type="checkbox" id="sch-active-' + i + '" /> ' + d.pt + '</label>' +
+        '<input type="text" id="sch-time-' + i + '" placeholder="Horário (ex: 08:00 às 12:00)" />' +
+        '<input type="text" id="sch-places-' + i + '" placeholder="Locais separados por vírgula (ex: Rua Arroio, Praia Ibiraquera)" />';
+      wrap.appendChild(row);
+      row.querySelector("#sch-active-" + i).checked = !!cfg.active;
+      row.querySelector("#sch-time-" + i).value = cfg.time || "";
+      row.querySelector("#sch-places-" + i).value = cfg.places || "";
+    });
+  }
+  async function saveSchedule() {
+    const out = {};
+    DAYS.forEach(function(d, i) {
+      out[d.k] = {
+        active: document.getElementById("sch-active-" + i).checked,
+        time: document.getElementById("sch-time-" + i).value.trim(),
+        places: document.getElementById("sch-places-" + i).value.trim()
+      };
+    });
+    const bad = DAYS.filter(function(d) { return out[d.k].active && !out[d.k].places && !out[d.k].time; });
+    if (bad.length && !confirm("Há dia(s) marcado(s) sem horário nem local. Salvar mesmo assim?")) return;
+    if (db) {
+      const res = await db.from("config").upsert({ clave: "horarios", valor: JSON.stringify(out) });
+      if (res.error) { alert("Erro: " + res.error.message); return; }
+    } else {
+      localStorage.setItem("fb_schedule", JSON.stringify(out));
+    }
+    schedule = out;
+    renderSchedule();
+    alert("Horários e locais salvos!");
+  }
+  function loadScheduleFromString(str) {
+    try { const o = JSON.parse(str); if (o && typeof o === "object") schedule = o; } catch (e) {}
+  }
 
   const FALLBACK_PRODUCTS = [
     { id: 1, cat: "donas", name_pt: "Rosquinha Artesanal Clássica", name_es: "Dona Artesanal Clásica", description: "Macia por dentro, sequinha e passada no açúcar • Tierna y azucarada", price_1: 3.00, price_3: 8.00, price_6: 15.00, price_12: 28.00 },
@@ -444,6 +582,7 @@
           resCfg.data.forEach(function(row) {
             if (row.clave === "admin_pin") adminPin = row.valor;
             if (row.clave === "logo_url") currentLogoBase64 = row.valor;
+            if (row.clave === "horarios" && row.valor) loadScheduleFromString(row.valor);
             if (row.clave && row.clave.indexOf("foto_") === 0 && row.valor) productPhotos[row.clave.slice(5)] = row.valor;
           });
         }
@@ -454,12 +593,14 @@
       products = JSON.parse(localStorage.getItem("fb_products_v2")) || FALLBACK_PRODUCTS;
       adminPin = localStorage.getItem("fb_admin_pin") || "1234";
       currentLogoBase64 = localStorage.getItem("fb_logo_url") || "";
+      loadScheduleFromString(localStorage.getItem("fb_schedule"));
       products.forEach(function(p) {
         const ph = localStorage.getItem("fb_photo_" + p.id);
         if (ph) productPhotos[p.id] = ph;
       });
     }
     applyLogoToHeader(currentLogoBase64);
+    renderSchedule();
     renderCatalog();
     updateCartBar();
   }
@@ -528,6 +669,7 @@
     document.querySelectorAll("[data-pt]").forEach(function(el) {
       el.textContent = el.getAttribute("data-" + lang);
     });
+    renderSchedule();
     renderCatalog();
     updateCartBar();
   }
@@ -751,6 +893,13 @@
     const payment = document.getElementById("cust-payment").value;
     const notes = document.getElementById("cust-notes").value.trim();
 
+    const dayKey = document.getElementById("cust-day").value;
+    const needDay = activeDays().length > 0;
+    if (needDay && !dayKey) {
+      alert(currentLang === "pt" ? "Escolha o dia da entrega." : "Elegí el día de entrega.");
+      document.getElementById("checkout-section").scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (!name || !phone || !location) {
       alert(currentLang === "pt" ? "Preencha seu Nome, Telefone e Local de entrega." : "Completá tu Nombre, Teléfono y Lugar de entrega.");
       document.getElementById("checkout-section").scrollIntoView({ behavior: "smooth" });
@@ -766,6 +915,11 @@
       "📍 *Entrega:* " + location,
       "💳 *Pagamento:* " + payment
     ];
+    if (needDay) {
+      const dObj = DAYS.filter(function(d) { return d.k === dayKey; })[0];
+      const dCfg = schedule[dayKey] || {};
+      lines.splice(5, 0, "🗓️ *Dia:* " + dObj.pt + (dCfg.time ? " (" + dCfg.time + ")" : ""));
+    }
     if (notes) lines.push("📝 *Obs:* " + notes);
     lines.push("", "🛒 *Itens do Pedido:*");
 
@@ -786,6 +940,7 @@
     const entered = prompt("Senha Admin:");
     if (entered === adminPin) {
       renderAdminList();
+      renderScheduleAdmin();
       document.getElementById("admin-modal").style.display = "block";
     } else if (entered !== null) {
       alert("Senha incorreta.");
