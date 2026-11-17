@@ -1,10 +1,10 @@
 // Service worker — Flor de Baunilha
 // Mude o número da versão quando quiser forçar atualização do cache.
-const CACHE = "fb-v2";
+const CACHE = "fb-v3";
 const SHELL = ["./", "index.html", "avatar.jpg", "icon-192.png", "icon-512.png", "qr-flordebaunilha.png", "manifest.webmanifest"];
 
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) { return Promise.all(SHELL.map(function (u) { return c.add(u).catch(function () {}); })); }).then(function () { return self.skipWaiting(); }));
 });
 
 self.addEventListener("activate", function (e) {
