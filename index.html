@@ -2,7 +2,20 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Rosquinhas, pães artesanais e bolos sob encomenda em Imbituba - SC. Faça seu pedido pelo WhatsApp e retire no local." />
+  <meta name="theme-color" content="#4A2E1B" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Flor de Baunilha" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Flor de Baunilha — Confeitaria Artesanal" />
+  <meta property="og:description" content="Rosquinhas, pães artesanais e bolos sob encomenda em Imbituba - SC." />
+  <meta property="og:url" content="https://flordebaunilha.alastecno.com/" />
+  <meta property="og:image" content="https://flordebaunilha.alastecno.com/icon-512.png" />
   <title>Flor de Baunilha — Confeitaria Artesanal | Imbituba - SC</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,11 +37,11 @@
       background-color: var(--bg);
       color: var(--brown);
       line-height: 1.5;
-      padding-bottom: 95px;
+      padding-bottom: calc(95px + env(safe-area-inset-bottom, 0px));
     }
     header {
       text-align: center;
-      padding: 26px 16px 20px;
+      padding: calc(26px + env(safe-area-inset-top, 0px)) 16px 20px;
       border-bottom: 2px dashed var(--gold);
       background: linear-gradient(180deg, #F4ECE1 0%, #FAF6F0 100%);
     }
@@ -55,6 +68,29 @@
     .logo-fallback small { font-size: 0.65rem; font-style: italic; }
     h1 { font-family: Georgia, serif; font-size: 1.9rem; }
     .subtitle { font-size: 0.92rem; color: var(--brown-light); font-weight: 500; }
+    .header-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .hdr-btn {
+      background: var(--card); border: 1.5px solid var(--gold); color: var(--brown);
+      padding: 7px 14px; border-radius: 20px; font-size: 0.84rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+    .hdr-btn:hover { background: #F4ECE1; }
+    .share-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      z-index: 300; align-items: center; justify-content: center; padding: 16px; overflow-y: auto;
+    }
+    .share-card {
+      background: var(--card); border: 2px solid var(--gold); border-radius: 16px;
+      padding: 18px; max-width: 340px; width: 100%; text-align: center; margin: auto;
+    }
+    .share-card h3 { font-family: Georgia, serif; font-size: 1.2rem; margin-bottom: 4px; }
+    .share-card .share-sub { font-size: 0.84rem; color: var(--brown-light); margin-bottom: 10px; }
+    .share-card .qr-img { width: 230px; max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 10px; display: block; margin: 0 auto; }
+    .share-card .share-url { font-size: 0.78rem; color: var(--brown-light); margin-top: 6px; word-break: break-all; }
+    .share-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .share-actions .hdr-btn { display: block; text-decoration: none; text-align: center; }
+    .share-actions .wa { background: var(--green); border-color: var(--green); color: #fff; }
+    .share-actions .wa:hover { filter: brightness(1.05); background: var(--green); }
     .container { max-width: 680px; margin: 0 auto; padding: 16px 14px; }
     .intro-box {
       background: var(--card); border: 1.5px solid var(--border);
@@ -135,7 +171,7 @@
     }
     .floating-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: var(--brown); color: #FFF;
-      padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: space-between; align-items: center;
       box-shadow: 0 -4px 14px rgba(0,0,0,0.18); z-index: 100;
     }
     .wa-btn {
@@ -269,6 +305,10 @@
   </div>
   <h1>Flor de Baunilha</h1>
   <p class="subtitle" data-pt="Confeitaria Artesanal • Imbituba - SC" data-es="Pastelería Artesanal • Imbituba - SC">Confeitaria Artesanal • Imbituba - SC</p>
+  <div class="header-actions">
+    <button type="button" class="hdr-btn" id="share-btn" onclick="openShare()" data-pt="📤 Compartilhar" data-es="📤 Compartir">📤 Compartilhar</button>
+    <button type="button" class="hdr-btn" id="install-btn" onclick="installApp()" style="display:none;" data-pt="📲 Instalar app" data-es="📲 Instalar app">📲 Instalar app</button>
+  </div>
 </header>
 
 <div class="container">
@@ -343,6 +383,22 @@
   <button type="button" class="wa-btn" onclick="sendWhatsAppOrder()" data-pt="📲 Enviar Pedido no WhatsApp" data-es="📲 Enviar Pedido por WhatsApp">📲 Enviar Pedido no WhatsApp</button>
 </div>
 
+<div class="share-overlay" id="share-modal" onclick="if(event.target===this) closeShare()">
+  <div class="share-card">
+    <h3 data-pt="📤 Compartilhar o site" data-es="📤 Compartir el sitio">📤 Compartilhar o site</h3>
+    <p class="share-sub" data-pt="Mostre o QR Code ou envie o link para quem quiser pedir." data-es="Mostrá el QR o enviá el link a quien quiera pedir.">Mostre o QR Code ou envie o link para quem quiser pedir.</p>
+    <img class="qr-img" src="qr-flordebaunilha.png" alt="QR Code do site Flor de Baunilha" />
+    <div class="share-url">flordebaunilha.alastecno.com</div>
+    <div class="share-actions">
+      <a class="hdr-btn wa" id="share-wa" href="#" target="_blank" rel="noopener" data-pt="💬 Enviar por WhatsApp" data-es="💬 Enviar por WhatsApp">💬 Enviar por WhatsApp</a>
+      <button type="button" class="hdr-btn" id="share-native" onclick="nativeShare()" style="display:none;" data-pt="📤 Mais opções…" data-es="📤 Más opciones…">📤 Mais opções…</button>
+      <button type="button" class="hdr-btn" onclick="copyLink()" data-pt="🔗 Copiar link" data-es="🔗 Copiar link">🔗 Copiar link</button>
+      <a class="hdr-btn" href="qr-flordebaunilha.png" download="qr-flor-de-baunilha.png" data-pt="⬇️ Baixar QR Code" data-es="⬇️ Descargar QR">⬇️ Baixar QR Code</a>
+      <button type="button" class="hdr-btn" onclick="closeShare()" data-pt="Fechar" data-es="Cerrar">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="admin-modal">
   <div class="modal-content">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -359,6 +415,12 @@
         <button type="button" class="btn-sm btn-dark" onclick="saveLogoToCloud()">💾 Salvar Logo na Página</button>
         <button type="button" class="btn-sm btn-red" onclick="removeLogoFromCloud()">Remover Logo</button>
       </div>
+    </div>
+
+    <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
+      <h4 style="margin-bottom:6px;">📄 Cartaz com QR Code para imprimir</h4>
+      <p style="font-size:0.8rem; color:var(--brown-light);">Tamanho A5 (vertical), pronto para colocar no balcão ou na barraca.</p>
+      <a class="btn-sm btn-dark" style="display:inline-block; text-decoration:none;" href="cartel-qr-flordebaunilha.png" download="cartaz-qr-flor-de-baunilha.png">⬇️ Baixar cartaz</a>
     </div>
 
     <div style="background:#FAF6F0; padding:12px; border-radius:10px; border:1px solid var(--gold); margin-bottom:14px;">
@@ -404,10 +466,11 @@
   // --- CONFIGURACIÓN SUPABASE (Dejá las comillas "" y pegá tus datos adentro) ---
   const SUPABASE_URL = "https://ebtlnhudnmyqspgbvyyw.supabase.co";
   const SUPABASE_KEY = "sb_publishable_awf4a-DVknXEJuQmvi53gg_u4Dcc0W6";
-  const db = (SUPABASE_URL.startsWith("http")) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+  const db = (SUPABASE_URL.startsWith("http") && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
   const WHATSAPP_NUMBER = "5548991180841";
   const PICKUP_URL = "https://maps.app.goo.gl/yPRcFQ6VnJp9qDMG7";
+  const SITE_URL = "https://flordebaunilha.alastecno.com/";
   let currentLang = "pt";
   let adminPin = "1234";
   let currentLogoBase64 = "";
@@ -954,6 +1017,68 @@
   }
 
   initApp();
+
+  // --- Compartilhar o site (modal com QR Code) ---
+  function shareText() {
+    return currentLang === "pt"
+      ? "Veja o cardápio da Flor de Baunilha: rosquinhas e pães artesanais em Imbituba 🍩"
+      : "Mirá el menú de Flor de Baunilha: donas y panes artesanales en Imbituba 🍩";
+  }
+  function openShare() {
+    document.getElementById("share-wa").href = "https://wa.me/?text=" + encodeURIComponent(shareText() + " " + SITE_URL);
+    document.getElementById("share-native").style.display = navigator.share ? "" : "none";
+    document.getElementById("share-modal").style.display = "flex";
+  }
+  function closeShare() { document.getElementById("share-modal").style.display = "none"; }
+  async function nativeShare() {
+    const title = "Flor de Baunilha — " + (currentLang === "pt" ? "Confeitaria Artesanal" : "Pastelería Artesanal");
+    try { await navigator.share({ title: title, text: shareText(), url: SITE_URL }); } catch (e) {}
+  }
+  async function copyLink() {
+    const isPt = currentLang === "pt";
+    try {
+      await navigator.clipboard.writeText(SITE_URL);
+      alert(isPt ? "Link copiado! Agora é só colar para compartilhar." : "¡Link copiado! Ahora solo pegalo para compartir.");
+    } catch (e) {
+      prompt(isPt ? "Copie o link:" : "Copiá el link:", SITE_URL);
+    }
+  }
+
+  // --- Instalar como app (PWA) ---
+  let deferredInstall = null;
+  const installBtn = document.getElementById("install-btn");
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredInstall = e;
+    if (!isStandalone) installBtn.style.display = "";
+  });
+  window.addEventListener("appinstalled", function () {
+    deferredInstall = null;
+    installBtn.style.display = "none";
+  });
+  if (isIOS && !isStandalone) installBtn.style.display = "";
+  async function installApp() {
+    if (deferredInstall) {
+      deferredInstall.prompt();
+      try { await deferredInstall.userChoice; } catch (e) {}
+      deferredInstall = null;
+      installBtn.style.display = "none";
+      return;
+    }
+    if (isIOS) {
+      alert(currentLang === "pt"
+        ? "Para instalar no iPhone: toque no botão Compartilhar do Safari e escolha 'Adicionar à Tela de Início'."
+        : "Para instalar en iPhone: tocá el botón Compartir de Safari y elegí 'Agregar a pantalla de inicio'.");
+    }
+  }
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
 
   // --- Badge WhatsApp 3D: abrir chat + inclinación con el puntero ---
   function openWhatsAppChat() {
