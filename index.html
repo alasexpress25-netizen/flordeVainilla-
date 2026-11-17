@@ -1058,7 +1058,8 @@
     deferredInstall = null;
     installBtn.style.display = "none";
   });
-  if (isIOS && !isStandalone) installBtn.style.display = "";
+  // O botão fica sempre visível (se o app ainda não estiver instalado); sem o aviso automático do navegador, mostra o passo a passo
+  if (!isStandalone) installBtn.style.display = "";
   async function installApp() {
     if (deferredInstall) {
       deferredInstall.prompt();
@@ -1071,6 +1072,10 @@
       alert(currentLang === "pt"
         ? "Para instalar no iPhone: toque no botão Compartilhar do Safari e escolha 'Adicionar à Tela de Início'."
         : "Para instalar en iPhone: tocá el botón Compartir de Safari y elegí 'Agregar a pantalla de inicio'.");
+    } else {
+      alert(currentLang === "pt"
+        ? "Para instalar: abra o menu do navegador (⋮) e escolha 'Instalar app' ou 'Adicionar à tela inicial'."
+        : "Para instalar: abrí el menú del navegador (⋮) y elegí 'Instalar app' o 'Agregar a pantalla de inicio'.");
     }
   }
 
