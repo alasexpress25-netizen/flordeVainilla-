@@ -208,6 +208,27 @@
       object-fit: cover; display: block; margin: 8px 0; background: #fff;
     }
 
+
+    /* ===== PLAYLIST DE VÍDEOS ===== */
+    .video-section { margin-bottom: 18px; }
+    .video-section h2.cat-title { margin-top: 4px; }
+    .video-box {
+      width: 100%; aspect-ratio: 16 / 9; margin: 0 auto; background: #000;
+      border-radius: 14px; overflow: hidden; border: 1.5px solid var(--border);
+      box-shadow: 0 4px 14px rgba(74, 46, 27, 0.14);
+    }
+    .video-box video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+    .video-nav { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+    .video-arrow {
+      width: 32px; height: 32px; border-radius: 50%; border: none; flex: none;
+      background: var(--brown); color: #FFF; font-size: 1.25rem; line-height: 1; cursor: pointer;
+    }
+    .video-dots { display: flex; flex-wrap: wrap; justify-content: center; }
+    .video-dot { width: 26px; height: 26px; border: 0; background: none; padding: 0; cursor: pointer; position: relative; }
+    .video-dot::before { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--border); transition: all .2s; }
+    .video-dot.active::before { background: var(--brown); inset: 6px; }
+    /* ===== FIN PLAYLIST ===== */
+
     /* ===== BADGE WHATSAPP 3D (flotante) ===== */
     .wa3d {
       --s: 66px;
@@ -319,6 +340,18 @@
       Delícias artesanais feitas no dia: rosquinhas super macias e sequinhas, pães salgados assados em fôrma individual e bolos caseiros sob encomenda. Os descontos por 3, 6 e 12 unidades são calculados automaticamente!
     </p>
   </div>
+
+  <section class="video-section" id="video-section" style="display:none;">
+    <h2 class="cat-title" data-pt="🎬 Nossos Vídeos" data-es="🎬 Nuestros Videos">🎬 Nossos Vídeos</h2>
+    <div class="video-box" id="video-box">
+      <video id="video-player" muted playsinline preload="metadata" controls controlsList="nodownload"></video>
+    </div>
+    <div class="video-nav" id="video-nav">
+      <button type="button" class="video-arrow" id="video-prev" aria-label="Anterior">‹</button>
+      <div class="video-dots" id="video-dots"></div>
+      <button type="button" class="video-arrow" id="video-next" aria-label="Próximo">›</button>
+    </div>
+  </section>
 
   <div id="catalog-container">Carregando cardápio...</div>
 
@@ -1017,6 +1050,111 @@
   }
 
   initApp();
+
+  // --- Playlist de vídeos em loop (Cloudflare R2 via Worker) ---
+  // Cole aqui a URL do seu Worker terminando em /list. Ex: "https://fb-videos.SEU-USUARIO.workers.dev/list"
+  // Enquanto estiver vazio (ou sem vídeos na pasta), a seção fica escondida.
+  (function () {
+    var VIDEO_LIST_URL = "https://fb-videos.alasexpress25.workers.dev/list";
+    if (!VIDEO_LIST_URL) return;
+
+    var section = document.getElementById("video-section");
+    var box = document.getElementById("video-box");
+    var player = document.getElementById("video-player");
+    var dotsEl = document.getElementById("video-dots");
+    var nav = document.getElementById("video-nav");
+    var prevBtn = document.getElementById("video-prev");
+    var nextBtn = document.getElementById("video-next");
+
+    var list = [], idx = 0, failures = 0, userPaused = false, ignorePause = false;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var saveData = navigator.connection && navigator.connection.saveData;
+    var wantAuto = !reduce && !saveData;
+
+    player.muted = true; // autoplay só funciona sem som; o cliente pode ativar o som nos controles
+
+    function tryPlay() {
+      var p = player.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+
+    function markDots() {
+      Array.prototype.forEach.call(dotsEl.children, function (d, i) { d.classList.toggle("active", i === idx); });
+    }
+
+    function load(i, autoplay) {
+      idx = (i + list.length) % list.length;
+      player.loop = list.length === 1;
+      player.src = list[idx].url;
+      markDots();
+      if (autoplay) tryPlay();
+    }
+
+    function buildDots() {
+      dotsEl.innerHTML = "";
+      list.forEach(function (v, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "video-dot";
+        b.setAttribute("aria-label", "Vídeo " + (i + 1));
+        b.addEventListener("click", function () { load(i, true); });
+        dotsEl.appendChild(b);
+      });
+      nav.style.display = list.length > 1 ? "" : "none";
+    }
+
+    prevBtn.addEventListener("click", function () { load(idx - 1, true); });
+    nextBtn.addEventListener("click", function () { load(idx + 1, true); });
+
+    // Terminou: passa para o próximo; no último volta ao primeiro (loop contínuo da playlist)
+    player.addEventListener("ended", function () { if (list.length > 1) load(idx + 1, true); });
+
+    player.addEventListener("loadeddata", function () { failures = 0; });
+    player.addEventListener("error", function () {
+      failures++;
+      if (list.length > 1 && failures < list.length) load(idx + 1, true);
+      else section.style.display = "none";
+    });
+
+    // Ajusta a moldura ao formato do vídeo (horizontal ou vertical)
+    player.addEventListener("loadedmetadata", function () {
+      var w = player.videoWidth, h = player.videoHeight;
+      if (!w || !h) return;
+      box.style.aspectRatio = w + " / " + h;
+      box.style.width = "min(100%, " + (72 * w / h).toFixed(2) + "vh)";
+    });
+
+    player.addEventListener("pause", function () {
+      if (ignorePause) { ignorePause = false; return; }
+      if (!player.ended) userPaused = true;
+    });
+    player.addEventListener("play", function () { userPaused = false; });
+
+    function setupObserver() {
+      if (!("IntersectionObserver" in window)) { if (wantAuto) tryPlay(); return; }
+      new IntersectionObserver(function (entries) {
+        var visible = entries[0].isIntersecting && entries[0].intersectionRatio >= 0.4;
+        if (visible) {
+          if (wantAuto && !userPaused) tryPlay();
+        } else if (!player.paused) {
+          ignorePause = true;
+          player.pause(); // economiza dados quando o cliente rola a página
+        }
+      }, { threshold: [0, 0.4] }).observe(box);
+    }
+
+    fetch(VIDEO_LIST_URL, { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (data) {
+        list = ((data && data.videos) || []).filter(function (v) { return v && v.url; });
+        if (!list.length) return;
+        section.style.display = "";
+        buildDots();
+        load(0, false);
+        setupObserver();
+      })
+      .catch(function () {});
+  })();
 
   // --- Compartilhar o site (modal com QR Code) ---
   function shareText() {

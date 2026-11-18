@@ -1,6 +1,6 @@
 // Service worker — Flor de Baunilha
 // Mude o número da versão quando quiser forçar atualização do cache.
-const CACHE = "fb-v3";
+const CACHE = "fb-v5";
 const SHELL = ["./", "index.html", "avatar.jpg", "icon-192.png", "icon-512.png", "qr-flordebaunilha.png", "manifest.webmanifest"];
 
 self.addEventListener("install", function (e) {
